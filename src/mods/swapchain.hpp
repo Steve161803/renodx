@@ -2267,7 +2267,7 @@ inline bool OnCreateResourceView(
       reshade::log::message(reshade::log::level::warning, s.str().c_str());
     }
     expected = true;
-  } else if (reshade::api::format_to_typeless(resource_desc.texture.format) != reshade::api::format_to_typeless(new_desc.format)) {
+  } else if (utils::resource::FormatToTypeless(resource_desc.texture.format) != utils::resource::FormatToTypeless(new_desc.format)) {
     // Games may use the swapchain format to define textures, causing resource views to mismatch
     switch (resource_desc.texture.format) {
       case reshade::api::format::r8g8b8a8_typeless:
@@ -2277,14 +2277,14 @@ inline bool OnCreateResourceView(
       case reshade::api::format::r16g16b16a16_float:
         new_desc.format = resource_desc.texture.format;
         break;
-
       default:
+        // Maybe be decompressible
         std::stringstream s;
         s << "mods::swapchain::OnCreateResourceView(";
         s << "unexpected case(" << desc.format << ")";
         s << ")";
         reshade::log::message(reshade::log::level::warning, s.str().c_str());
-        // assert(false);
+        assert(false);
         return false;
         break;
     }
@@ -2311,6 +2311,8 @@ inline bool OnCreateResourceView(
         new_desc.format = target_format;
         break;
       case reshade::api::format::r16g16b16a16_float:
+      case reshade::api::format::r16g16b16a16_uint:
+      case reshade::api::format::r16g16b16a16_unorm:
         break;
       default: {
         assert(false);
@@ -2397,7 +2399,7 @@ inline void OnDestroyResourceViewInfo(utils::resource::ResourceViewInfo* resourc
     resource_view_info->clone.handle = 0u;
   }
 
-  if (resource_view_info->fallback.handle != 0u) {
+  if (!resource_view_info->is_clone && resource_view_info->fallback.handle != 0u) {
     assert(resource_view_info->device != nullptr);
     resource_view_info->device->destroy_resource_view(resource_view_info->fallback);
     resource_view_info->fallback.handle = 0u;
@@ -2449,8 +2451,8 @@ inline bool OnCopyResource(
       dest_new = dest_clone;
     }
     can_be_copied = (source_desc_new.texture.format == dest_desc_new.texture.format)
-                    || (reshade::api::format_to_typeless(source_desc_new.texture.format)
-                        == reshade::api::format_to_typeless(dest_desc_new.texture.format));
+                    || (utils::resource::FormatToTypeless(source_desc_new.texture.format) == utils::resource::FormatToTypeless(dest_desc_new.texture.format))
+                    || utils::resource::IsCompressible(source_desc_new.texture.format, dest_desc_new.texture.format);
 
     if (!can_be_copied && use_auto_upgrade) {
       if (source_info->desc.texture.format != auto_upgrade_target.new_format && source_info->clone_target == nullptr) {
@@ -2478,8 +2480,8 @@ inline bool OnCopyResource(
     }
   } else {
     can_be_copied = (source_desc_new.texture.format == dest_desc_new.texture.format)
-                    || (reshade::api::format_to_typeless(source_desc_new.texture.format)
-                        == reshade::api::format_to_typeless(dest_desc_new.texture.format));
+                    || (utils::resource::FormatToTypeless(source_desc_new.texture.format) == utils::resource::FormatToTypeless(dest_desc_new.texture.format))
+                    || utils::resource::IsCompressible(source_desc_new.texture.format, dest_desc_new.texture.format);
   }
 
   // {
@@ -3160,8 +3162,8 @@ inline bool OnCopyTextureRegion(
   }
 
   bool can_be_copied = (source_desc_new.texture.format == dest_desc_new.texture.format)
-                       || (reshade::api::format_to_typeless(source_desc_new.texture.format)
-                           == reshade::api::format_to_typeless(dest_desc_new.texture.format));
+                       || (utils::resource::FormatToTypeless(source_desc_new.texture.format) == utils::resource::FormatToTypeless(dest_desc_new.texture.format))
+                       || utils::resource::IsCompressible(source_desc_new.texture.format, dest_desc_new.texture.format);
 
   if (can_be_copied) {
     cmd_list->copy_texture_region(source_new, source_subresource, source_box, dest_new, dest_subresource, dest_box, filter);
@@ -3198,6 +3200,8 @@ inline bool OnCopyTextureRegion(
   s << ")";
 
   reshade::log::message(reshade::log::level::warning, s.str().c_str());
+
+  assert(false);
 
   if (cmd_list->get_device()->get_api() == reshade::api::device_api::vulkan) {
     // perform blit
@@ -3295,13 +3299,18 @@ inline void OnPresent(
   if (use_device_proxy && device != proxy_device_reshade) {
     auto current_back_buffer = swapchain->get_current_back_buffer();
     auto* resource_info = utils::resource::GetResourceInfoUnsafe(current_back_buffer);
-    assert(resource_info != nullptr);
-    if (resource_info == nullptr) return;
+    if (resource_info == nullptr) {
+      assert(resource_info != nullptr);
+      return;
+    }
 
     HWND hwnd = static_cast<HWND>(swapchain->get_hwnd());
 
     auto* new_device = GetDeviceProxy(resource_info, hwnd);
-    if (new_device == nullptr) return;
+    if (new_device == nullptr) {
+      assert(new_device != nullptr);
+      return;
+    }
     if (proxied_device_reshade == nullptr) {
       proxied_device_reshade = device;
     } else {
@@ -3333,8 +3342,8 @@ inline void OnPresent(
     last_device_proxy_shared_resource = resource_info->proxy_resource;
 
     // Trigger a DX11 Present which will start the swapchain proxy steps on DX11
-
     proxy_swap_chain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
+
     last_device_proxy_shared_handle = nullptr;
     last_device_proxy_shared_resource = {0u};
   } else {
