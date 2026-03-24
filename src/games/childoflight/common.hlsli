@@ -1,4 +1,4 @@
-#include "./macleod_boynton.hlsl"
+#include "./macleod_boynton.hlsli"
 #include "./shared.h"
 
 // From the Resident Evil 4 Remake mod
@@ -277,7 +277,7 @@ float3 ApplyDisplayMap(float3 untonemapped) {
   return tonemapped_bt709;
 }
 
-float3 UpgradeToneMap(float3 hdr_color, float2 texcoord) {
+float3 DisplayMap(float3 hdr_color, float2 texcoord) {
   float3 output_color;
   if (RENODX_TONE_MAP_TYPE == 0.f) {
     output_color = saturate(hdr_color);
