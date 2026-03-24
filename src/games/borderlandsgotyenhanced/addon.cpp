@@ -267,6 +267,12 @@ renodx::utils::settings::Settings settings = {
           renodx::utils::platform::LaunchURL("https://github.com/clshortfuse/renodx");
         },
     },
+    new renodx::utils::settings::Setting{
+        .value_type = renodx::utils::settings::SettingValueType::TEXT,
+        .label = std::string("- Turn off Steam Overlay, And external FPS Limiters, Use the one in the mod instead.\n"
+        "- Set in-game 'Brightness' to '7' (default)."),
+        .section = "About",
+    },    
 };
 
 void OnPresetOff() {
@@ -322,6 +328,13 @@ BOOL APIENTRY DllMain(HMODULE h_module, DWORD fdw_reason, LPVOID lpv_reserved) {
       renodx::mods::swapchain::swap_chain_proxy_vertex_shader = __swap_chain_proxy_vertex_shader_dx11;
       renodx::mods::swapchain::swap_chain_proxy_pixel_shader = __swap_chain_proxy_pixel_shader_dx11;
       renodx::mods::swapchain::SetUseHDR10();
+
+      renodx::mods::swapchain::resource_upgrade_infos.push_back({
+          .old_format = reshade::api::format::r10g10b10a2_unorm,
+          .new_format = reshade::api::format::r16g16b16a16_float,
+          .aspect_ratio = renodx::mods::swapchain::SwapChainUpgradeTarget::BACK_BUFFER,
+          .aspect_ratio_tolerance = 0.01f,
+      });
 
       reshade::register_event<reshade::addon_event::init_swapchain>(OnInitSwapchain);
       break;
