@@ -1,4 +1,4 @@
-#include "./macleod_boynton.hlsl"
+#include "./macleod_boynton.hlsli"
 #include "./shared.h"
 
 // From the Resident Evil 4 Remake mod

@@ -1,4 +1,4 @@
-#include "./common.hlsl"
+#include "./common.hlsli"
 
 float4 BloomTintAndScreenBlendThreshold : register( c8 );
 float4 ImageAdjustments2 : register( c9 );
@@ -40,16 +40,16 @@ float4 main(PS_IN i) : COLOR
 	r0.x = saturate(r0.x + r1.w);
 	r2 = float4(1, 1, 0, 0) * i.texcoord1.xyxx;
 	r2 = tex2Dlod(SceneColorTexture, r2);
+
+	float3 hdr_color = r2.rgb;
+    float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r2.rgb);
+    if (RENODX_TONE_MAP_TYPE > 0) {
+      r2.rgb = hdr_color_tm;
+    }
+
 	r0.yzw = (r1.xxyz * -4 + r2.xxyz).yzw;
 	r1.xyz = r1.xyz * 4;
 	r0.xyz = r0.x * r0.yzw + r1.xyz;
-
-	float3 hdr_color = r0.rgb;
-    float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r0.rgb);
-    if (RENODX_TONE_MAP_TYPE > 0) {
-      r0.rgb = hdr_color_tm;
-    }
-
 	r0.w = dot(r0.xyz, float3(0.300000012, 0.589999974, 0.109999999));
 	r0.w = r0.w * -3;
 	r0.w = exp2(r0.w);
@@ -58,6 +58,7 @@ float4 main(PS_IN i) : COLOR
 	r1.xyz = r1.xyz * BloomTintAndScreenBlendThreshold.xyz;
 	r1.xyz = r1.xyz * 4 * CUSTOM_BLOOM;
 	r0.xyz = r1.xyz * r0.w + r0.xyz;
+	float3 vignette_color = r0.rgb;
 	r1.xyz = r0.xyz * VignetteColor.xyz;
 	r2.xyz = r0.xyz * -VignetteColor.xyz + r0.xyz;
 	r1.xyz = i.texcoord1.y * r2.xyz + r1.xyz;
@@ -70,7 +71,7 @@ float4 main(PS_IN i) : COLOR
 	r2.y = 0.00999999978;
 	r0.w = r2.y + -VignetteSettings.x;
     r0.xyz = (r0.w >= 0) ? r0.xyz : r1.xyz;
-	r0.xyz = lerp(hdr_color, r0.xyz, CUSTOM_VIGNETTE);
+	r0.rgb = lerp(vignette_color, r0.rgb, CUSTOM_VIGNETTE);
 	r1 = r0.zzxy + -ImageAdjustments2.z;
 	r1 = saturate(r1 * 10000);
 	r2.xyz = r0.xyz + ImageAdjustments2.x;
@@ -101,9 +102,10 @@ float4 main(PS_IN i) : COLOR
 	r0.yzw = (-r1.xxyz + r2.xxyz).yzw;
 	o.xyz = r0.x * r0.yzw + r1.xyz;
 
-	float3 sdr_color = renodx::color::srgb::DecodeSafe(o.rgb);
+	float3 sdr_color = renodx::color::gamma::DecodeSafe(o.rgb);
 	o.rgb = UpgradeToneMap(hdr_color, hdr_color_tm, sdr_color, i.texcoord.xy);
-	o.rgb = renodx::draw::RenderIntermediatePass(o.rgb);
+    o.rgb *= RENODX_DIFFUSE_WHITE_NITS / RENODX_GRAPHICS_WHITE_NITS;
+    o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);
 	
 	o.w = 0;
 	return o;

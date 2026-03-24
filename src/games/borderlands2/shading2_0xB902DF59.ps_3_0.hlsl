@@ -1,4 +1,4 @@
-#include "./shared.h"
+#include "./common.hlsli"
 
 float4 HFilterAxisCoeff : register( c9 );
 float4 HFilterDiagCoeff : register( c8 );
