@@ -1,4 +1,4 @@
-#include "./common.hlsl"
+#include "./common.hlsli"
 
 float4 BloomTintAndScreenBlendThreshold : register( c0 );
 float4 MinZ_MaxZRatio : register( c2 );
@@ -74,16 +74,16 @@ float4 main(PS_IN i) : COLOR
 	r3.xy = min(HalfResMaskRect.zw, r4.xy);
 	r2.zw = 0;
 	r2 = tex2Dlod(SceneColorTexture, r2);
-	r0.w = r2.w + -MinZ_MaxZRatio.y;
-	r0.w = 1 / r0.w;
-	r4 = tex2D(LowResPostProcessBuffer, r3);
 
     float3 hdr_color = r2.rgb;
     float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r2.rgb);
     if (RENODX_TONE_MAP_TYPE > 0) {
       r2.rgb = hdr_color_tm;
     }
-
+		
+	r0.w = r2.w + -MinZ_MaxZRatio.y;
+	r0.w = 1 / r0.w;
+	r4 = tex2D(LowResPostProcessBuffer, r3);
 	r5 = r4.zzxy * 4;
 	r2 = r4.zzxy * -4 + r2.zzxy;
 	r2 = r4.w * r2 + r5;
@@ -95,7 +95,7 @@ float4 main(PS_IN i) : COLOR
 	r4.x = exp2(r4.x);
 	r4.x = saturate(r4.x * BloomTintAndScreenBlendThreshold.w);
 	r2 = r3 * r4.x + r2;
-	r3.xy = float2(0, 1);
+	r3.xy = float4(0, 1, 0.5, -0.5).xy;
 	r4 = r3.xyyy * RainLayersDist.xxyz;
 	r4 = MinZ_MaxZRatio.x * r0.w + -r4;
 	r5.x = 1 / RainLayersDist.x;
@@ -131,23 +131,29 @@ float4 main(PS_IN i) : COLOR
 	r4 = tex2D(ColorGradingLUT, r2.xy);
 	r2 = tex2D(ColorGradingLUT, r2.zwzw);
 	r5 = lerp(r4, r2, r0.y);
+
+	float3 sdr_color = renodx::color::srgb::DecodeSafe(r5.rgb);
+	r5.rgb = UpgradeToneMap(hdr_color, hdr_color_tm, sdr_color);
+	r5.rgb = renodx::color::srgb::EncodeSafe(r5.rgb);
+
 	r0.z = 4;
-	//r0.xy = r1.zw * r0.z + DNEImageGrainParameter.xy;
 	r1 = tex2D(DNEVignetTexture, r1.zwzw);
 	r0.z = saturate(dot(r1, DNEVignetMaskFactors));
 	r1.xyz = -r3.y + DNEVignetColor.xyz;
 	r1.xyz = r0.z * r1.xyz + 1;
-	r1.xyz = lerp(float3(1.0, 1.0, 1.0), r1.xyz, CUSTOM_VIGNETTE);
-	//r0 = tex2D(DNEImageGrainTexture, r0);
-	//r0.x = r0.x * 2 + -1;
-	//r0.x = r0.x * ImageAdjustments1.w;
-	//o.xyz = saturate(r5.xyz * r1.xyz + r0.x);
-	o.xyz = saturate(r5.xyz * r1.xyz);
-
-	float3 sdr_color = renodx::color::srgb::DecodeSafe(o.rgb);
-	o.rgb = UpgradeToneMap(hdr_color, hdr_color_tm, sdr_color, i.texcoord.xy);
-	o.rgb = renodx::color::srgb::EncodeSafe(o.rgb);
-
+	r1.xyz = lerp(1.0, r1.xyz, CUSTOM_VIGNETTE);
+	if (FILM_GRAIN_TYPE == 0) {
+	  o.xyz = r5.xyz * r1.xyz;
+	  o.rgb = renodx::color::gamma::DecodeSafe(o.rgb);	
+	  o.rgb = FilmGrain(o.rgb, i.texcoord.xy);
+	  o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);	
+	} else {	
+	  r0.xy = r1.zw * r0.z + DNEImageGrainParameter.xy;
+	  r0 = tex2D(DNEImageGrainTexture, r0);
+	  r0.x = r0.x * 2 + -1;
+	  r0.x = r0.x * ImageAdjustments1.w * (CUSTOM_FILM_GRAIN_STRENGTH * 2.f);
+	  o.xyz = r5.xyz * r1.xyz + r0.x;
+	}  
 	o.w = r5.w;
 	return o;
 }

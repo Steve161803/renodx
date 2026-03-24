@@ -25,9 +25,9 @@ struct ShaderInjectData {
   float custom_bloom;
 
   float custom_vignette;
+  float film_grain_type;
   float custom_film_grain;
   float custom_random;
-  float padding1;
 };
 
 #ifndef __cplusplus
@@ -56,8 +56,9 @@ float4 shader_injection[8] : register(c50);
 #define CUSTOM_BLOOM                           shader_injection[3][3]
 
 #define CUSTOM_VIGNETTE                        shader_injection[4][0]
-#define CUSTOM_FILM_GRAIN_STRENGTH             shader_injection[4][1]
-#define CUSTOM_RANDOM                          shader_injection[4][2]
+#define FILM_GRAIN_TYPE                        shader_injection[4][1]
+#define CUSTOM_FILM_GRAIN_STRENGTH             shader_injection[4][2]
+#define CUSTOM_RANDOM                          shader_injection[4][3]
 
 #define RENODX_SWAP_CHAIN_CLAMP_COLOR_SPACE           color::convert::COLOR_SPACE_BT2020
 #define RENODX_SWAP_CHAIN_ENCODING_COLOR_SPACE        color::convert::COLOR_SPACE_BT2020
@@ -90,6 +91,7 @@ cbuffer shader_injection : register(b13) {
 #define RENODX_SWAP_CHAIN_CUSTOM_COLOR_SPACE   shader_injection.swap_chain_custom_color_space
 #define CUSTOM_BLOOM                           shader_injection.custom_bloom
 #define CUSTOM_VIGNETTE                        shader_injection.custom_vignette
+#define FILM_GRAIN_TYPE                        shader_injection.film_grain_type
 #define CUSTOM_FILM_GRAIN_STRENGTH             shader_injection.custom_film_grain
 #define CUSTOM_RANDOM                          shader_injection.custom_random
 

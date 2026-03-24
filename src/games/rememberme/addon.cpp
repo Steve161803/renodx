@@ -50,7 +50,7 @@ renodx::utils::settings::Settings settings = {
         .label = "Tone Mapper",
         .section = "Tone Mapping",
         .tooltip = "Sets the tone mapper type",
-        .labels = {"Vanilla", "RenoDRT"},
+        .labels = {"Vanilla", "Neutwo"},
         .parse = [](float value) { return value * 3.f; },
     },
     new renodx::utils::settings::Setting{
@@ -176,6 +176,7 @@ renodx::utils::settings::Settings settings = {
         .max = 100.f,
         .is_enabled = []() { return shader_injection.tone_map_type > 0; },
         .parse = [](float value) { return value * 0.02f; },
+        .is_visible = []() { return current_settings_mode == 1; },        
     },
     new renodx::utils::settings::Setting{
         .key = "ColorGradeScene",
@@ -208,7 +209,7 @@ renodx::utils::settings::Settings settings = {
             "JPN CRT",
         },
     },
-        new renodx::utils::settings::Setting{
+    new renodx::utils::settings::Setting{
       .key = "FxBloom",
       .binding = &shader_injection.custom_bloom,
       .default_value = 50.f,
@@ -229,12 +230,33 @@ renodx::utils::settings::Settings settings = {
     new renodx::utils::settings::Setting{
         .key = "FxFilmGrain",
         .binding = &shader_injection.custom_film_grain,
-        .default_value = 30.f,
-        .label = "Perceptual Film Grain",
+        .default_value = 50.f,
+        .label = "Film Grain Strenght",
         .section = "Effects",
         .max = 100.f,
         .parse = [](float value) { return value * 0.01f; },
     },
+    new renodx::utils::settings::Setting{
+        .key = "FxFilmGrainType",
+        .binding = &shader_injection.film_grain_type,
+        .value_type = renodx::utils::settings::SettingValueType::INTEGER,
+        .default_value = 1.f,
+        .label = "Film Grain Type",
+        .section = "Effects",
+        .labels = {"Perceptual", "Vanilla"},
+    },
+    new renodx::utils::settings::Setting{
+        .key = "FPSLimit",
+        .binding = &renodx::utils::swapchain::fps_limit,
+        .default_value = 60.f,
+        .can_reset = false,
+        .label = "FPS Limit",
+        .section = "FPS Limit",
+        .min = 0.f,
+        .max = 500.f,
+        .parse = [](float value) { return value * 2.f; },
+        .is_global = true,
+    },      
     new renodx::utils::settings::Setting{
         .value_type = renodx::utils::settings::SettingValueType::BUTTON,
         .label = "Reset",
@@ -268,17 +290,11 @@ renodx::utils::settings::Settings settings = {
         },
     },
     new renodx::utils::settings::Setting{
-        .key = "FPSLimit",
-        .binding = &renodx::utils::swapchain::fps_limit,
-        .default_value = 60.f,
-        .can_reset = false,
-        .label = "FPS Limit",
-        .section = "FPS Limit",
-        .min = 0.f,
-        .max = 500.f,
-        .parse = [](float value) { return value * 2.f; },
-        .is_global = true,
-    },      
+        .value_type = renodx::utils::settings::SettingValueType::TEXT,
+        .label = std::string("- Turn off Steam Overlay, And external FPS Limiters, Use the one in the mod instead.\n"
+        "- Set in-game 'Gamma' to '50%' (default)."),
+        .section = "About",
+    },        
 };
 
 void OnPresetOff() {
@@ -293,7 +309,8 @@ void OnPresetOff() {
    renodx::utils::settings::UpdateSetting("ColorGradeSaturation", 50.f);
    renodx::utils::settings::UpdateSetting("FxBloom", 50.f);
    renodx::utils::settings::UpdateSetting("FxVignette", 50.f);
-   renodx::utils::settings::UpdateSetting("FxFilmGrain", 30.f);
+   renodx::utils::settings::UpdateSetting("FxFilmGrain", 50.f);
+   renodx::utils::settings::UpdateSetting("FxFilmGrainType", 1.f);   
 }
 
 bool fired_on_init_swapchain = false;
@@ -342,8 +359,14 @@ BOOL APIENTRY DllMain(HMODULE h_module, DWORD fdw_reason, LPVOID lpv_reserved) {
       renodx::mods::swapchain::resource_upgrade_infos.push_back({
           .old_format = reshade::api::format::b8g8r8a8_unorm,
           .new_format = reshade::api::format::r16g16b16a16_float,
-          .use_resource_view_cloning = true,
+          .aspect_ratio = renodx::mods::swapchain::SwapChainUpgradeTarget::BACK_BUFFER,
       });
+      renodx::mods::swapchain::resource_upgrade_infos.push_back({
+          .old_format = reshade::api::format::r16g16b16a16_unorm,
+          .new_format = reshade::api::format::r16g16b16a16_float,
+          .aspect_ratio = renodx::mods::swapchain::SwapChainUpgradeTarget::BACK_BUFFER,
+          .aspect_ratio_tolerance = 0.01f,
+      });      
     
       reshade::register_event<reshade::addon_event::init_swapchain>(OnInitSwapchain);
       break;

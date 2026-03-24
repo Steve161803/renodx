@@ -1,4 +1,4 @@
-#include "./common.hlsl"
+#include "./common.hlsli"
 
 float3 ColorScale : register( c0 );
 float4 OverlayColor : register( c7 );
@@ -18,8 +18,9 @@ float4 main(float2 texcoord : TEXCOORD) : COLOR
 	r0.xyz = r0.xyz * -r2.xyz + OverlayColor.xyz;
 	o.xyz = OverlayColor.w * r0.xyz + r1.xyz;
 
-	o.rgb = renodx::color::srgb::DecodeSafe(o.rgb);
-	o.rgb = renodx::draw::RenderIntermediatePass(o.rgb);
+    o.rgb = renodx::color::gamma::DecodeSafe(o.rgb);
+	o.rgb *= RENODX_DIFFUSE_WHITE_NITS / RENODX_GRAPHICS_WHITE_NITS;
+	o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);
 
 	o.w = 1;
 	return o;

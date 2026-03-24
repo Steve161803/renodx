@@ -1,4 +1,4 @@
-#include "./common.hlsl"
+#include "./common.hlsli"
 
 float4 BloomTintAndScreenBlendThreshold : register( c0 );
 float4 ImageAdjustments1 : register( c7 );
@@ -40,9 +40,6 @@ float4 main(PS_IN i) : COLOR
 
 	r0 = float4(1, 1, 0, 0) * i.texcoord1.xyxx;
 	r0 = tex2Dlod(SceneColorTexture, r0);
-	r1.xy = max(i.texcoord1.zw, HalfResMaskRect.xy);
-	r2.xy = min(HalfResMaskRect.zw, r1.xy);
-	r1 = tex2D(LowResPostProcessBuffer, r2);
 
     float3 hdr_color = r0.rgb;
     float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r0.rgb);
@@ -50,6 +47,9 @@ float4 main(PS_IN i) : COLOR
       r0.rgb = hdr_color_tm;
     }
 
+	r1.xy = max(i.texcoord1.zw, HalfResMaskRect.xy);
+	r2.xy = min(HalfResMaskRect.zw, r1.xy);
+	r1 = tex2D(LowResPostProcessBuffer, r2);
 	r0 = r1.zzxy * -4 + r0.zzxy;
 	r2 = r1.zzxy * 4;
 	r0 = r1.w * r0 + r2;
@@ -68,7 +68,7 @@ float4 main(PS_IN i) : COLOR
 	r1.y = 1 / sqrt(r1.y);
 	r1.y = 1 / r1.y;
 	r1.y = saturate(r1.y * 0.5);
-	r2.xy = float2(0.5, 1.5);
+	r2.xy = float4(0.5, 1.5, 15, 0.0625).xy;
 	r1.z = LightShaftParameters.w * -r2.x + r2.y;
 	r2 = tex2D(LightShaftsTexture, i.texcoord.zwzw);
 	r1.w = r2.w * r2.w;
@@ -95,23 +95,29 @@ float4 main(PS_IN i) : COLOR
 	r2 = tex2D(ColorGradingLUT, r1.xy);
 	r1 = tex2D(ColorGradingLUT, r1.zwzw);
 	r3 = lerp(r2, r1, r0.x);
+
+	float3 sdr_color = renodx::color::gamma::DecodeSafe(r3.rgb);
+	r3.rgb = UpgradeToneMap(hdr_color, hdr_color_tm, sdr_color);
+	r3.rgb = renodx::color::gamma::EncodeSafe(r3.rgb);
+
 	r0 = tex2D(DNEVignetTexture, i.texcoord2.zwzw);
 	r0.x = saturate(dot(r0, DNEVignetMaskFactors));
-	r1.xz = float2(1, 0);
+	r1.xz = float4(1, 0, 4, -3).xz;
 	r0.yzw = (-r1.x + DNEVignetColor.xxyz).yzw;
 	r0.xyz = r0.x * r0.yzw + 1;
-	r0.xyz = lerp(float3(1.0, 1.0, 1.0), r0.xyz, CUSTOM_VIGNETTE);
-	//r1.xy = i.texcoord2.zw * r1.z + DNEImageGrainParameter.xy;
-	//r1 = tex2D(DNEImageGrainTexture, r1);
-	//r0.w = r1.x * 2 + -1;
-	//r0.w = r0.w * ImageAdjustments1.w;
-	//o.xyz = saturate(r3.xyz * r0.xyz + r0.w);
-	o.xyz = saturate(r3.xyz * r0.xyz);
-
-	float3 sdr_color = renodx::color::srgb::DecodeSafe(o.rgb);
-	o.rgb = UpgradeToneMap(hdr_color, hdr_color_tm, sdr_color, i.texcoord.xy);
-	o.rgb = renodx::color::srgb::EncodeSafe(o.rgb);
-	
+	r0.xyz = lerp(1.0, r0.xyz, CUSTOM_VIGNETTE);
+	if (FILM_GRAIN_TYPE == 0) {
+	  o.xyz = r3.xyz * r0.xyz;
+	  o.rgb = renodx::color::gamma::DecodeSafe(o.rgb);	
+	  o.rgb = FilmGrain(o.rgb, i.texcoord.xy);
+	  o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);	
+	} else {	
+	  r1.xy = i.texcoord2.zw * r1.z + DNEImageGrainParameter.xy;
+	  r1 = tex2D(DNEImageGrainTexture, r1);
+	  r0.w = r1.x * 2 + -1;
+	  r0.w = r0.w * ImageAdjustments1.w * (CUSTOM_FILM_GRAIN_STRENGTH * 2.f);
+	  o.xyz = r3.xyz * r0.xyz + r0.w;
+	}
 	o.w = r3.w;
 	return o;
 }
