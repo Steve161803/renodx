@@ -1,4 +1,4 @@
-#include "./common.hlsl"
+#include "./common.hlsli"
 
 float3 ColorScale : register( c0 );
 float4 OverlayColor : register(c4);
@@ -14,23 +14,17 @@ float4 main(float2 texcoord : TEXCOORD) : COLOR
 	float3 r2;
 
 	r0 = tex2D(SceneColorTexture, texcoord);
-
-    float3 hdr_color = max(r0.rgb, 0.000000999999997);
-    float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r0.rgb);
-    if (RENODX_TONE_MAP_TYPE > 0) {
-      r0.rgb = hdr_color_tm;
-    }
-		
 	r1.xyz = r0.xyz * ColorScale.xyz;
 	r2.xyz = ColorScale.xyz;
 	r0.xyz = r0.xyz * -r2.xyz + OverlayColor.xyz;
 	o.w = r0.w;
-	if (SHADOWS_DESATURATION == 0) {
-	  r0.xyz = OverlayColor.w * r0.xyz + r1.xyz;
-	} else {
+	if (RENODX_TONE_MAP_TYPE == 0) {
 	  r0.xyz = saturate(OverlayColor.w * r0.xyz + r1.xyz);
+	  r1.xyz = max(r0.xyz, 9.99999997e-007);
+	} else {
+	  r0.xyz = max(0, OverlayColor.w * r0.xyz + r1.xyz);
+	  r1.xyz = max(r0.xyz, 0);
 	}
-	r1.xyz = max(r0.xyz, 9.99999997e-007);
 	r0.x = log2(r1.x);
 	r0.y = log2(r1.y);
 	r0.z = log2(r1.z);
@@ -39,8 +33,9 @@ float4 main(float2 texcoord : TEXCOORD) : COLOR
 	o.y = exp2(r0.y);
 	o.z = exp2(r0.z);
 
-    float3 sdr_color = renodx::color::srgb::DecodeSafe(o.rgb);
-	o.rgb = UpgradeToneMap(hdr_color, hdr_color_tm, sdr_color, texcoord.xy);
-    o.rgb = renodx::draw::RenderIntermediatePass(o.rgb);
+	float3 hdr_color = renodx::color::gamma::DecodeSafe(o.rgb);
+    o.rgb = DisplayMap(hdr_color, texcoord.xy);
+    o.rgb *= RENODX_DIFFUSE_WHITE_NITS / RENODX_GRAPHICS_WHITE_NITS;
+    o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);
 	return o;
 }
