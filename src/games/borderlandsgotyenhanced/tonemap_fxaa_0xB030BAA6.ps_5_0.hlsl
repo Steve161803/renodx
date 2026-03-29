@@ -46,6 +46,7 @@ void main(
   r1.xyzw = BlurredImage.Sample(BlurredImageSampler_s, v1.xy).xyzw;
   r0.w = saturate(1 + -r1.w);
   r0.xyz = r0.xyz * r0.www + r1.xyz;
+  float3 scene_color = r0.xyz;
   if (RENODX_TONE_MAP_TYPE == 0) {
     r0.xyz = saturate(-SceneShadowsAndDesaturation.xyz + r0.xyz);
     r0.xyz = SceneInverseHighLights.xyz * r0.xyz;
@@ -65,6 +66,9 @@ void main(
   r0.x = log2(r0.x);
   o1.x = 0.25 * r0.x;
   r0.xyz = r1.xyz + r0.www;
+  if (RENODX_TONE_MAP_TYPE > 0) {
+    r0.rgb = lerp(max(0, scene_color), r0.rgb, RENODX_COLOR_GRADE_STRENGTH);
+  }
   if (RENODX_TONE_MAP_TYPE == 0) {
     r0.xyz = saturate(GammaColorScaleAndInverse.xyz * r0.xyz);
     r0.xyz = max(float3(9.99999975e-05, 9.99999975e-05, 9.99999975e-05), r0.xyz);
