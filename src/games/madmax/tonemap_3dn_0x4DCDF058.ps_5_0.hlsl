@@ -158,7 +158,10 @@ void main(
 
   float3 hdr_color = r0.rgb;
   float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r0.rgb);
-
+  if (RENODX_TONE_MAP_TYPE > 0) {
+    r0.rgb = hdr_color_tm;
+  }
+  
   r0.xyz = max(float3(1.00000001e-07,1.00000001e-07,1.00000001e-07), r0.xyz);
   r1.xyz = r0.xyz * float3(0.150000006,0.150000006,0.150000006) + float3(0.0500000007,0.0500000007,0.0500000007);
   r1.xyz = r0.xyz * r1.xyz + float3(0.00400000019,0.00400000019,0.00400000019);

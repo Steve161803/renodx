@@ -282,7 +282,7 @@ float3 ApplyDisplayMap(float3 untonemapped) {
   const float peak_ratio = RENODX_PEAK_WHITE_NITS / RENODX_DIFFUSE_WHITE_NITS;
 
   float3 untonemapped_bt2020 = renodx::color::bt2020::from::BT709(untonemapped);
-  float3 tonemapped_bt2020 = renodx::tonemap::neutwo::MaxChannel(untonemapped_bt2020, peak_ratio);
+  float3 tonemapped_bt2020 = renodx::tonemap::neutwo::PerChannel(untonemapped_bt2020, peak_ratio);
   float3 tonemapped_bt709 = renodx::color::bt709::from::BT2020(tonemapped_bt2020);
 
   return tonemapped_bt709;
