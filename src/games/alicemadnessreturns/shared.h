@@ -51,7 +51,7 @@ float4 shader_injection[8] : register(c50);
 #define RENODX_TONE_MAP_BLOWOUT                shader_injection[2][3]
 
 #define RENODX_TONE_MAP_FLARE                  shader_injection[3][0]
-#define RENODX_TONE_MAP_HUE_SHIFT              shader_injection[3][1]
+#define RENODX_TONE_MAP_HUE_SHIFT              1.f //shader_injection[3][1]
 #define RENODX_SWAP_CHAIN_CUSTOM_COLOR_SPACE   shader_injection[3][2]
 #define CUSTOM_AUTO_EXPOSURE                   shader_injection[3][3]
 
@@ -76,7 +76,7 @@ cbuffer shader_injection : register(b13) {
 #define RENODX_GRAPHICS_WHITE_NITS             shader_injection.graphics_white_nits
 #define RENODX_COLOR_GRADE_STRENGTH            shader_injection.color_grade_strength
 #define RENODX_TONE_MAP_TYPE                   shader_injection.tone_map_type
-#define RENODX_TONE_MAP_HUE_SHIFT              shader_injection.tone_map_hue_shift
+#define RENODX_TONE_MAP_HUE_SHIFT              1.f //shader_injection.tone_map_hue_shift
 #define RENODX_TONE_MAP_EXPOSURE               shader_injection.tone_map_exposure
 #define RENODX_TONE_MAP_HIGHLIGHTS             shader_injection.tone_map_highlights
 #define RENODX_TONE_MAP_SHADOWS                shader_injection.tone_map_shadows

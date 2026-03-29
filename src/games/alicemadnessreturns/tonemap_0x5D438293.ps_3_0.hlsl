@@ -16,6 +16,7 @@ float4 main(float4 texcoord : TEXCOORD) : COLOR
 	float3 r1;
 
 	r0 = tex2D(SceneColorTexture, texcoord.zwzw);	
+	float3 scene_color = r0.rgb;
     if (RENODX_TONE_MAP_TYPE == 0) {
       r0.xyz = saturate(r0.xyz + -SceneShadowsAndDesaturation.xyz);
       r0.xyz = r0.xyz * SceneInverseHighLights.xyz;
@@ -36,6 +37,9 @@ float4 main(float4 texcoord : TEXCOORD) : COLOR
 	r0.w = SceneShadowsAndDesaturation.w;
 	r0.yzw = (r1.xxyz * r0.w + GammaOverlayColor.xxyz).yzw;
 	r0.xyz = r0.x + r0.yzw;
+	if (RENODX_TONE_MAP_TYPE > 0) {
+    r0.rgb = lerp(max(0, scene_color), r0.rgb, RENODX_COLOR_GRADE_STRENGTH);
+	}
 	if (RENODX_TONE_MAP_TYPE == 0) {
 	  r0.xyz = saturate(r0.xyz * GammaColorScaleAndInverse.xyz);
 	  r1.xyz = max(r0.xyz, 0.000000999999997);

@@ -14,6 +14,7 @@ float4 main(float2 texcoord : TEXCOORD) : COLOR
 	float3 r2;
 
 	r0 = tex2D(SceneColorTexture, texcoord);
+	float3 scene_color = r0.rgb;
 	r1.xyz = r0.xyz * ColorScale.xyz;
 	r2.xyz = ColorScale.xyz;
 	r0.xyz = r0.xyz * -r2.xyz + OverlayColor.xyz;
@@ -24,6 +25,9 @@ float4 main(float2 texcoord : TEXCOORD) : COLOR
 	} else {
 	  r0.xyz = max(0, OverlayColor.w * r0.xyz + r1.xyz);
 	  r1.xyz = max(r0.xyz, 0);
+	}
+	if (RENODX_TONE_MAP_TYPE > 0) {
+    r0.rgb = lerp(max(0, scene_color), r0.rgb, RENODX_COLOR_GRADE_STRENGTH);
 	}
 	r0.x = log2(r1.x);
 	r0.y = log2(r1.y);
