@@ -72,8 +72,10 @@ void main(
 
   float3 hdr_color = r0.rgb;
   float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r0.rgb);
+  if (RENODX_TONE_MAP_TYPE > 0) {
+    r0.rgb = hdr_color_tm;
+  }  
 
-  if (RENODX_TONE_MAP_TYPE == 0) {
   r1.xyz = float3(-0.00400000019, -0.00400000019, -0.00400000019);
   r0.xyz = r1.xyz + r0.xyz;
   r0.xyz = max(float3(0,0,0), r0.xyz);
@@ -87,21 +89,6 @@ void main(
   r0.xyz = float3(0.0599999987,0.0599999987,0.0599999987) + r0.xyz;
   r0.xyz = r1.xyz / r0.xyz;
   o0.xyz = r0.xyz;
-  } else {
-    r1.xyz = float3(-0.00300000019, -0.00300000019, -0.00300000019);
-    r0.xyz = r1.xyz + r0.xyz;
-    r0.xyz = max(float3(0, 0, 0), r0.xyz);
-    r0.xyz = min(float3(64, 64, 64), r0.xyz);
-    r1.xyz = float3(5.49999981, 5.49999981, 5.49999981) * r0.xyz;
-    r1.xyz = float3(0.5, 0.5, 0.5) + r1.xyz;
-    r1.xyz = r1.xyz * r0.xyz;
-    r2.xyz = float3(4.59999981, 4.59999981, 4.59999981) * r0.xyz;
-    r2.xyz = float3(1.30000005, 1.30000005, 1.30000005) + r2.xyz;
-    r0.xyz = r2.xyz * r0.xyz;
-    r0.xyz = float3(0.0709999987, 0.0709999987, 0.0709999987) + r0.xyz;
-    r0.xyz = r1.xyz / r0.xyz;
-    o0.xyz = r0.xyz;  
-  }
 
   float3 sdr_color = renodx::color::srgb::DecodeSafe(o0.rgb);
   o0.rgb = UpgradeToneMap(hdr_color, hdr_color_tm, sdr_color);
