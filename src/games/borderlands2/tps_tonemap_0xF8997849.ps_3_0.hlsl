@@ -42,15 +42,16 @@ float4 main(PS_IN i) : COLOR
 	r2 = float4(1, 1, 0, 0) * i.texcoord1.xyxx;
 	r2 = tex2Dlod(SceneColorTexture, r2);
 
-	float3 hdr_color = r2.rgb;
-    float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r2.rgb);
+	float3 hdr_color = lerp(r1.xyz * 4, r2.rgb, r0.x);
+    float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(hdr_color);
+	r0.xyz = hdr_color;
     if (RENODX_TONE_MAP_TYPE > 0) {
-      r2.rgb = hdr_color_tm;
+      r0.xyz = hdr_color_tm;
     }
 
-	r0.yzw = (r1.xxyz * -4 + r2.xxyz).yzw;
-	r1.xyz = r1.xyz * 4;
-	r0.xyz = r0.x * r0.yzw + r1.xyz;
+	// r0.yzw = (r1.xxyz * -4 + r2.xxyz).yzw;
+	// r1.xyz = r1.xyz * 4;
+	// r0.xyz = r0.x * r0.yzw + r1.xyz;
 	r0.w = dot(r0.xyz, float3(0.300000012, 0.589999974, 0.109999999));
 	r0.w = r0.w * -3;
 	r0.w = exp2(r0.w);
