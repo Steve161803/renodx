@@ -19,6 +19,9 @@ float4 main(float2 texcoord : TEXCOORD) : COLOR
 	o.xyz = OverlayColor.w * r0.xyz + r1.xyz;
 
     o.rgb = renodx::color::gamma::DecodeSafe(o.rgb);
+    if (RENODX_TONE_MAP_TYPE == 0.f) {
+      o.rgb = saturate(o.rgb);
+    }
 	o.rgb *= RENODX_DIFFUSE_WHITE_NITS / RENODX_GRAPHICS_WHITE_NITS;
 	o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);
 

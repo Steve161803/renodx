@@ -73,20 +73,22 @@ float4 main(PS_IN i) : COLOR
 	r4.xy = max(r3.xy, HalfResMaskRect.xy);
 	r3.xy = min(HalfResMaskRect.zw, r4.xy);
 	r2.zw = 0;
-	r2 = tex2Dlod(SceneColorTexture, r2);
-
-    float3 hdr_color = r2.rgb;
-    float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r2.rgb);
-    if (RENODX_TONE_MAP_TYPE > 0) {
-      r2.rgb = hdr_color_tm;
-    }
-		
+	r2 = tex2Dlod(SceneColorTexture, r2);		
 	r0.w = r2.w + -MinZ_MaxZRatio.y;
 	r0.w = 1 / r0.w;
 	r4 = tex2D(LowResPostProcessBuffer, r3);
-	r5 = r4.zzxy * 4;
-	r2 = r4.zzxy * -4 + r2.zzxy;
-	r2 = r4.w * r2 + r5;
+	// r5 = r4.zzxy * 4;
+	// r2 = r4.zzxy * -4 + r2.zzxy;
+	// r2 = r4.w * r2 + r5;
+
+	float3 hdr_color = lerp(r4.xyz * 4, r2.rgb, r4.w);
+	float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(hdr_color);
+	float3 pre_lut_color = hdr_color;
+	if (RENODX_TONE_MAP_TYPE > 0) {
+	  pre_lut_color = hdr_color_tm;
+	}
+	r2 = float4(pre_lut_color.b, pre_lut_color.b, pre_lut_color.r, pre_lut_color.g);
+
 	r3 = tex2D(FilterColor1Texture, r3.zwzw);
 	r3 = r3.zzxy * BloomTintAndScreenBlendThreshold.zzxy;
 	r3 = r3 * 4 * CUSTOM_BLOOM;

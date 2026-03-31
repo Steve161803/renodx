@@ -40,19 +40,21 @@ float4 main(PS_IN i) : COLOR
 
 	r0 = float4(1, 1, 0, 0) * i.texcoord1.xyxx;
 	r0 = tex2Dlod(SceneColorTexture, r0);
-
-    float3 hdr_color = r0.rgb;
-    float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r0.rgb);
-    if (RENODX_TONE_MAP_TYPE > 0) {
-      r0.rgb = hdr_color_tm;
-    }
-
 	r1.xy = max(i.texcoord1.zw, HalfResMaskRect.xy);
 	r2.xy = min(HalfResMaskRect.zw, r1.xy);
 	r1 = tex2D(LowResPostProcessBuffer, r2);
-	r0 = r1.zzxy * -4 + r0.zzxy;
-	r2 = r1.zzxy * 4;
-	r0 = r1.w * r0 + r2;
+	// r0 = r1.zzxy * -4 + r0.zzxy;
+	// r2 = r1.zzxy * 4;
+	// r0 = r1.w * r0 + r2;
+
+	float3 hdr_color = lerp(r1.xyz * 4, r0.rgb, r1.w);
+	float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(hdr_color);
+	float3 pre_lut_color = hdr_color;
+	if (RENODX_TONE_MAP_TYPE > 0) {
+	  pre_lut_color = hdr_color_tm;
+	}
+	r0 = float4(pre_lut_color.b, pre_lut_color.b, pre_lut_color.r, pre_lut_color.g);
+
 	r1.x = dot(r0.zwy, float3(0.300000012, 0.589999974, 0.109999999));
 	r1.x = r1.x * -3;
 	r1.x = exp2(r1.x);
