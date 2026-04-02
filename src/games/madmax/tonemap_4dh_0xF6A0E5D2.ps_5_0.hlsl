@@ -128,7 +128,7 @@ void main(
   r0.x = saturate(r0.x + r0.y);
   r1.xyz = r5.xyz + -r2.xyz;
   r1.xyz = r0.xxx * r1.xyz + r2.xyz;
-  r2.xyz = EdgeFadeTexture.Sample(EdgeFadeTexture_s, v1.xy).xyz;
+  r2.xyz = lerp(1.f, EdgeFadeTexture.Sample(EdgeFadeTexture_s, v1.xy).xyz, CUSTOM_VIGNETTE);
   r1.xyz = r2.xyz * r1.xyz;
   r0.xyz = LensDirtTexture.Sample(LensDirtTexture_s, r0.zw).xyz;
   r0.xyz = r0.xyz * Consts[12].www + float3(1,1,1);

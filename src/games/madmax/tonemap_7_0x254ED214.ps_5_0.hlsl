@@ -48,7 +48,7 @@ void main(
   r2.xyz = BloomTexture.Sample(BloomTexture_s, r0.xy).xyz * CUSTOM_BLOOM;
   r0.xyz = SceneTexture.Sample(SceneTexture_s, r0.xy).xyz;
   r1.xyz = r2.xyz * Consts[3].xxx + r1.xyz;
-  r2.xyz = EdgeFadeTexture.Sample(EdgeFadeTexture_s, v1.xy).xyz;
+  r2.xyz = lerp(1.f, EdgeFadeTexture.Sample(EdgeFadeTexture_s, v1.xy).xyz, CUSTOM_VIGNETTE);
   r0.xyz = r2.xyz * r0.xyz;
   r0.xyz = r0.xyz * Consts[2].xxx + r1.xyz;
 
