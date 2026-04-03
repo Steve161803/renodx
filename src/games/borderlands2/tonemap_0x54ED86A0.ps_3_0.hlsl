@@ -40,25 +40,26 @@ float4 main(PS_IN i) : COLOR
 	r0.x = saturate(r0.x + r1.w);
 	r2 = float4(1, 1, 0, 0) * i.texcoord1.xyxx;
 	r2 = tex2Dlod(SceneColorTexture, r2);
-
-	float3 hdr_color = lerp(r1.xyz * 4, r2.rgb, r0.x);
-    float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(hdr_color);
-	r0.xyz = hdr_color;
-    if (RENODX_TONE_MAP_TYPE > 0) {
-      r0.xyz = hdr_color_tm;
-    }
-
 	// r0.yzw = (r1.xxyz * -4 + r2.xxyz).yzw;
 	// r1.xyz = r1.xyz * 4;
 	// r0.xyz = r0.x * r0.yzw + r1.xyz;
-	r0.w = dot(r0.xyz, float3(0.300000012, 0.589999974, 0.109999999));
+	float3 hdr_color = lerp(r1.xyz * 4, r2.rgb, r0.x);
+
+	r0.w = dot(hdr_color, float3(0.300000012, 0.589999974, 0.109999999));
 	r0.w = r0.w * -3;
 	r0.w = exp2(r0.w);
 	r0.w = saturate(r0.w * BloomTintAndScreenBlendThreshold.w);
 	r1 = tex2D(FilterColor1Texture, i.texcoord.zwzw);
 	r1.xyz = r1.xyz * BloomTintAndScreenBlendThreshold.xyz;
 	r1.xyz = r1.xyz * 4 * CUSTOM_BLOOM;
-	r0.xyz = r1.xyz * r0.w + r0.xyz;
+	// r0.xyz = r1.xyz * r0.w + r0.xyz;
+	hdr_color += r1.xyz * r0.w;
+	float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(hdr_color);
+	r0.xyz = hdr_color;
+	if (RENODX_TONE_MAP_TYPE > 0) {
+	  r0.xyz = hdr_color_tm;
+	}
+
 	float3 vignette_color = r0.rgb;
 	r1.xyz = r0.xyz * VignetteColor.xyz;
 	r2.xyz = r0.xyz * -VignetteColor.xyz + r0.xyz;
@@ -103,10 +104,9 @@ float4 main(PS_IN i) : COLOR
 	r0.yzw = (-r1.xxyz + r2.xxyz).yzw;
 	o.xyz = r0.x * r0.yzw + r1.xyz;
 
-	float3 sdr_color = renodx::color::gamma::DecodeSafe(o.rgb);
+	float3 sdr_color = renodx::color::srgb::DecodeSafe(o.rgb);
 	o.rgb = UpgradeToneMap(hdr_color, hdr_color_tm, sdr_color, i.texcoord.xy);
-    o.rgb *= RENODX_DIFFUSE_WHITE_NITS / RENODX_GRAPHICS_WHITE_NITS;
-    o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);
+    o.rgb = renodx::draw::RenderIntermediatePass(o.rgb);
 	
 	o.w = 0;
 	return o;
