@@ -52,9 +52,7 @@ float4 main(float2 texcoord : TEXCOORD) : COLOR
 	r2.xyz = lerp(r1.xyz, r0.x, DNEBlur.x);
 	if (FILM_GRAIN_TYPE == 0) {
 	  o.xyz = r2.xyz;
-	  o.rgb = renodx::color::gamma::DecodeSafe(o.rgb);	
-	  o.rgb = FilmGrain(o.rgb, texcoord.xy);
-	  o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);	
+	  o.rgb = FilmGrain(o.rgb, texcoord.xy);	
 	} else {
 	  r0.xy = DNEGrainOffset.xy;
 	  r0.xy = texcoord.xy * 4 + r0.xy;
@@ -63,5 +61,5 @@ float4 main(float2 texcoord : TEXCOORD) : COLOR
 	  o.xyz = r0.x * DNEGrainOffset.w * (CUSTOM_FILM_GRAIN_STRENGTH * 2.f) + r2.xyz;
 	}
 	o.w = consts.w;
-	return o;
+	return saturate(o);
 }

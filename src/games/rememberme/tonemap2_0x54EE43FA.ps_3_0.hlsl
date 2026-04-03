@@ -82,21 +82,17 @@ float4 main(PS_IN i) : COLOR
 	// r2 = r4.w * r2 + r5;
 
 	float3 hdr_color = lerp(r4.xyz * 4, r2.rgb, r4.w);
-	float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(hdr_color);
-	float3 pre_lut_color = hdr_color;
-	if (RENODX_TONE_MAP_TYPE > 0) {
-	  pre_lut_color = hdr_color_tm;
-	}
-	r2 = float4(pre_lut_color.b, pre_lut_color.b, pre_lut_color.r, pre_lut_color.g);
 
 	r3 = tex2D(FilterColor1Texture, r3.zwzw);
 	r3 = r3.zzxy * BloomTintAndScreenBlendThreshold.zzxy;
 	r3 = r3 * 4 * CUSTOM_BLOOM;
-	r4.x = dot(r2.zwy, float3(0.300000012, 0.589999974, 0.109999999));
+	// r4.x = dot(r2.zwy, float3(0.300000012, 0.589999974, 0.109999999));
+	r4.x = dot(hdr_color, float3(0.300000012, 0.589999974, 0.109999999));
 	r4.x = r4.x * -3;
 	r4.x = exp2(r4.x);
 	r4.x = saturate(r4.x * BloomTintAndScreenBlendThreshold.w);
-	r2 = r3 * r4.x + r2;
+	// r2 = r3 * r4.x + r2;
+	hdr_color += r3.zwy * r4.x;
 	r3.xy = float4(0, 1, 0.5, -0.5).xy;
 	r4 = r3.xyyy * RainLayersDist.xxyz;
 	r4 = MinZ_MaxZRatio.x * r0.w + -r4;
@@ -118,7 +114,15 @@ float4 main(PS_IN i) : COLOR
 	r5.w = r8.x;
 	r0.x = dot(r5, r0);
 	r0.x = r0.x * RainIntensity.x;
-	r0 = r0.x * 0.0900000036 + r2;
+	// r0 = r0.x * 0.0900000036 + r2;	
+	hdr_color += r0.x * 0.0900000036;
+	float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(hdr_color);
+	float3 pre_lut_color = hdr_color;
+	if (RENODX_TONE_MAP_TYPE > 0) {
+	  pre_lut_color = hdr_color_tm;
+	}
+	r0 = float4(pre_lut_color.b, pre_lut_color.b, pre_lut_color.r, pre_lut_color.g);
+
 	r2.xyz = r0.zwy * ImageAdjustments2.y + ImageAdjustments2.x;
 	r4.z = 1 / r2.x;
 	r4.w = 1 / r2.y;
@@ -146,9 +150,9 @@ float4 main(PS_IN i) : COLOR
 	r1.xyz = lerp(1.0, r1.xyz, CUSTOM_VIGNETTE);
 	if (FILM_GRAIN_TYPE == 0) {
 	  o.xyz = r5.xyz * r1.xyz;
-	  o.rgb = renodx::color::gamma::DecodeSafe(o.rgb);	
+	  o.rgb = renodx::color::srgb::DecodeSafe(o.rgb);	
 	  o.rgb = FilmGrain(o.rgb, i.texcoord.xy);
-	  o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);	
+	  o.rgb = renodx::color::srgb::EncodeSafe(o.rgb);	
 	} else {	
 	  r0.xy = r1.zw * r0.z + DNEImageGrainParameter.xy;
 	  r0 = tex2D(DNEImageGrainTexture, r0);
