@@ -151,7 +151,7 @@ float4 main(PS_IN i) : COLOR
 	if (FILM_GRAIN_TYPE == 0) {
 	  o.xyz = r5.xyz * r1.xyz;
 	  o.rgb = renodx::color::srgb::DecodeSafe(o.rgb);	
-	  o.rgb = FilmGrain(o.rgb, i.texcoord.xy);
+	  o.rgb = FilmGrain(o.rgb, i.texcoord.xy, DNEImageGrainParameter.xy);
 	  o.rgb = renodx::color::srgb::EncodeSafe(o.rgb);	
 	} else {	
 	  r0.xy = r1.zw * r0.z + DNEImageGrainParameter.xy;

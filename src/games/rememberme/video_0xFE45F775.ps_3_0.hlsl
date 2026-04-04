@@ -52,7 +52,7 @@ float4 main(float2 texcoord : TEXCOORD) : COLOR
 	r2.xyz = lerp(r1.xyz, r0.x, DNEBlur.x);
 	if (FILM_GRAIN_TYPE == 0) {
 	  o.xyz = r2.xyz;
-	  o.rgb = FilmGrain(o.rgb, texcoord.xy);	
+	  o.rgb = FilmGrain(o.rgb, texcoord.xy, DNEGrainOffset.xy);	
 	} else {
 	  r0.xy = DNEGrainOffset.xy;
 	  r0.xy = texcoord.xy * 4 + r0.xy;

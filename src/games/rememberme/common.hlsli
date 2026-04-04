@@ -288,11 +288,11 @@ float3 UpgradeToneMap(float3 hdr_color, float3 hdr_color_tm, float3 sdr_color) {
   return output_color;
 }
 
-float3 FilmGrain(float3 output_color, float2 texcoord) {
+float3 FilmGrain(float3 output_color, float2 texcoord, float2 grain_offset) {
   if (CUSTOM_FILM_GRAIN_STRENGTH != 0) {
     output_color = renodx::effects::ApplyFilmGrain(
         output_color,
-        texcoord,
+        texcoord + grain_offset * 0.25f,
         CUSTOM_RANDOM,
         CUSTOM_FILM_GRAIN_STRENGTH * 0.03f,
         1.f);
