@@ -19,21 +19,21 @@ float4 main(float2 texcoord : TEXCOORD) : COLOR
 	r0.xyz = r0.xyz * -r2.xyz + OverlayColor.xyz;       
 	o.w = r0.w;                                         
 	if (RENODX_TONE_MAP_TYPE == 0) {
-      r0.xyz = saturate(OverlayColor.w * r0.xyz + r1.xyz);
-    } else {
-      r0.xyz = max(0, OverlayColor.w * r0.xyz + r1.xyz);
-    }
-    r1.xyz = max(r0.xyz, 0);             
-    r0.x = log2(r1.x);                                  
-    r0.y = log2(r1.y);
-    r0.z = log2(r1.z);
-    r0.xyz = r0.xyz * InverseGamma.x;                
-    o.x = exp2(r0.x);                                  
-    o.y = exp2(r0.y);
-    o.z = exp2(r0.z);
+    r0.xyz = saturate(OverlayColor.w * r0.xyz + r1.xyz);
+  } else {
+    r0.xyz = max(0, OverlayColor.w * r0.xyz + r1.xyz);
+  }
+  r1.xyz = max(r0.xyz, 0);             
+  r0.x = log2(r1.x);                                  
+  r0.y = log2(r1.y);
+  r0.z = log2(r1.z);
+  r0.xyz = r0.xyz * InverseGamma.x;                
+  o.x = exp2(r0.x);                                  
+  o.y = exp2(r0.y);
+  o.z = exp2(r0.z);
 
-    o.rgb = renodx::color::gamma::DecodeSafe(o.rgb);
-	o.rgb *= RENODX_DIFFUSE_WHITE_NITS / RENODX_GRAPHICS_WHITE_NITS;
-	o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);
+  o.rgb = renodx::color::srgb::DecodeSafe(o.rgb);
+  o.rgb = renodx::draw::RenderIntermediatePass(o.rgb);
+  
 	return o;
 }

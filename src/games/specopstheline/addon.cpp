@@ -87,6 +87,17 @@ renodx::utils::settings::Settings settings = {
         .is_visible = []() { return current_settings_mode == 2; },
     },
     new renodx::utils::settings::Setting{
+        .key = "GammaCorrection",
+        .binding = &shader_injection.gamma_correction,
+        .value_type = renodx::utils::settings::SettingValueType::INTEGER,
+        .default_value = 1.f,
+        .label = "SDR EOTF Emulation",
+        .section = "Tone Mapping",
+        .tooltip = "Emulates a display EOTF.",
+        .labels = {"Off", "2.2", "BT.1886"},
+        .is_visible = []() { return current_settings_mode >= 1; },
+    },      
+    new renodx::utils::settings::Setting{
         .key = "ColorGradeExposure",
         .binding = &shader_injection.tone_map_exposure,
         .default_value = 1.f,
@@ -334,7 +345,6 @@ BOOL APIENTRY DllMain(HMODULE h_module, DWORD fdw_reason, LPVOID lpv_reserved) {
       renodx::utils::random::binds.push_back(&shader_injection.custom_random);
       renodx::mods::swapchain::swap_chain_proxy_vertex_shader = __swap_chain_proxy_vertex_shader_dx11;
       renodx::mods::swapchain::swap_chain_proxy_pixel_shader = __swap_chain_proxy_pixel_shader_dx11;
-      renodx::mods::swapchain::SetUseHDR10();
 
       renodx::mods::swapchain::resource_upgrade_infos.push_back({
           .old_format = reshade::api::format::b8g8r8a8_unorm,
