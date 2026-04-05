@@ -344,7 +344,6 @@ BOOL APIENTRY DllMain(HMODULE h_module, DWORD fdw_reason, LPVOID lpv_reserved) {
       renodx::utils::random::binds.push_back(&shader_injection.custom_random);
       renodx::mods::swapchain::swap_chain_proxy_vertex_shader = __swap_chain_proxy_vertex_shader_dx11;
       renodx::mods::swapchain::swap_chain_proxy_pixel_shader = __swap_chain_proxy_pixel_shader_dx11;
-      renodx::mods::swapchain::SetUseHDR10();
       
       renodx::mods::swapchain::resource_upgrade_infos.push_back({
           .old_format = reshade::api::format::r8g8b8a8_typeless,
