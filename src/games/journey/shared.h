@@ -18,6 +18,7 @@
 #define RENODX_TONE_MAP_FLARE                  shader_injection.tone_map_flare
 #define RENODX_SWAP_CHAIN_CUSTOM_COLOR_SPACE   shader_injection.swap_chain_custom_color_space
 #define CUSTOM_BLOOM                           shader_injection.custom_bloom
+#define CUSTOM_VIGNETTE                        shader_injection.custom_vignette
 #define BARREL_DISTORTION                      shader_injection.barrel_distortion
 #define CUSTOM_FILM_GRAIN_STRENGTH             shader_injection.custom_film_grain
 #define CUSTOM_RANDOM                          shader_injection.custom_random
@@ -50,9 +51,14 @@ struct ShaderInjectData {
   float swap_chain_custom_color_space;
 
   float custom_bloom;
+  float custom_vignette;
   float barrel_distortion;  
   float custom_film_grain;
+
   float custom_random;
+  float padding1;
+  float padding2;
+  float padding3;
 };
 
 #ifndef __cplusplus
