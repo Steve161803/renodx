@@ -76,36 +76,6 @@ float3 ApplyLuminosityGrading(float3 untonemapped, float lum, UserGradingConfig 
   return color;
 }
 
-float3 ApplySaturationBlowoutHighlightSaturation(float3 tonemapped, float y, renodx::color::grade::Config config) {
-  float3 color = tonemapped;
-  if (config.saturation != 1.f || config.dechroma != 0.f || config.blowout != 0.f) {
-    float3 perceptual_new = renodx::color::oklab::from::BT709(color);
-
-    if (config.dechroma != 0.f) {
-      perceptual_new.yz *= lerp(1.f, 0.f, saturate(pow(y / (10000.f / 100.f), (1.f - config.dechroma))));
-    }
-
-    if (config.blowout != 0.f) {
-      float percent_max = saturate(y * 100.f / 10000.f);
-      // positive = 1 to 0, negative = 1 to 2
-      float blowout_strength = 100.f;
-      float blowout_change = pow(1.f - percent_max, blowout_strength * abs(config.blowout));
-      if (config.blowout < 0) {
-        blowout_change = (2.f - blowout_change);
-      }
-
-      perceptual_new.yz *= blowout_change;
-    }
-
-    perceptual_new.yz *= config.saturation;
-
-    color = renodx::color::bt709::from::OkLab(perceptual_new);
-
-    color = renodx::color::bt709::clamp::AP1(color);
-  }
-  return color;
-}
-
 float3 ApplyHueAndPurityGrading(
     float3 ungraded_bt2020,
     float3 reference_bt2020,

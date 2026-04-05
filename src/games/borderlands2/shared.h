@@ -67,8 +67,9 @@ float4 shader_injection[8] : register(c50);
 #define CUSTOM_RANDOM                          shader_injection[5][0]
 
 #define RENODX_SWAP_CHAIN_CLAMP_COLOR_SPACE           color::convert::COLOR_SPACE_BT2020
-#define RENODX_SWAP_CHAIN_ENCODING_COLOR_SPACE        color::convert::COLOR_SPACE_BT2020
-#define RENODX_SWAP_CHAIN_ENCODING                    renodx::draw::ENCODING_PQ
+#define RENODX_SWAP_CHAIN_ENCODING_COLOR_SPACE        color::convert::COLOR_SPACE_BT709
+#define RENODX_SWAP_CHAIN_ENCODING                    renodx::draw::ENCODING_SCRGB
+
 #else
 #if ((__SHADER_TARGET_MAJOR == 5 && __SHADER_TARGET_MINOR >= 1) || __SHADER_TARGET_MAJOR >= 6)
 cbuffer shader_injection : register(b13, space50) {
@@ -102,8 +103,8 @@ cbuffer shader_injection : register(b13) {
 #define CUSTOM_RANDOM                          shader_injection.custom_random
 
 #define RENODX_SWAP_CHAIN_CLAMP_COLOR_SPACE           color::convert::COLOR_SPACE_BT2020
-#define RENODX_SWAP_CHAIN_ENCODING_COLOR_SPACE        color::convert::COLOR_SPACE_BT2020
-#define RENODX_SWAP_CHAIN_ENCODING                    renodx::draw::ENCODING_PQ
+#define RENODX_SWAP_CHAIN_ENCODING_COLOR_SPACE        color::convert::COLOR_SPACE_BT709
+#define RENODX_SWAP_CHAIN_ENCODING                    renodx::draw::ENCODING_SCRGB
 
 #endif
 
