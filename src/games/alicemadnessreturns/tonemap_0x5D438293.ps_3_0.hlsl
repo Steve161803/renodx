@@ -55,10 +55,9 @@ float4 main(float4 texcoord : TEXCOORD) : COLOR
 	o.y = exp2(r0.y);
 	o.z = exp2(r0.z);
 
-	float3 hdr_color = renodx::color::gamma::DecodeSafe(o.rgb);
+	float3 hdr_color = renodx::color::srgb::DecodeSafe(o.rgb);
     o.rgb = DisplayMap(hdr_color, texcoord.xy);
-    o.rgb *= RENODX_DIFFUSE_WHITE_NITS / RENODX_GRAPHICS_WHITE_NITS;
-    o.rgb = renodx::color::gamma::EncodeSafe(o.rgb);
+    o.rgb = renodx::draw::RenderIntermediatePass(o.rgb);
 
 	o.w = 0;
 	return o;
