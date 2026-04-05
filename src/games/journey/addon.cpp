@@ -230,15 +230,6 @@ renodx::utils::settings::Settings settings = {
       .parse = [](float value) { return value * 0.02f; },
     },
     new renodx::utils::settings::Setting{
-      .key = "FxVignette",
-      .binding = &shader_injection.custom_vignette,
-      .default_value = 100.f,
-      .label = "Vignette",
-      .section = "Effects",
-      .max = 100.f,
-      .parse = [](float value) { return value * 0.01f; },
-    },    
-    new renodx::utils::settings::Setting{
         .key = "FxFilmGrain",
         .binding = &shader_injection.custom_film_grain,
         .default_value = 0.f,
@@ -301,8 +292,7 @@ void OnPresetOff() {
    renodx::utils::settings::UpdateSetting("ColorGradeContrast", 50.f);
    renodx::utils::settings::UpdateSetting("ColorGradeSaturation", 50.f);
    renodx::utils::settings::UpdateSetting("SwapChainCustomColorSpace", 0.f);
-   renodx::utils::settings::UpdateSetting("FxBloom", 50.f);
-   renodx::utils::settings::UpdateSetting("FxVignette", 100.f);   
+   renodx::utils::settings::UpdateSetting("FxBloom", 50.f);  
    renodx::utils::settings::UpdateSetting("FxFilmGrain", 0.f);
    renodx::utils::settings::UpdateSetting("BarrelDistortion", 1.f);
 }
@@ -343,7 +333,6 @@ BOOL APIENTRY DllMain(HMODULE h_module, DWORD fdw_reason, LPVOID lpv_reserved) {
       renodx::utils::random::binds.push_back(&shader_injection.custom_random);
       renodx::mods::swapchain::swap_chain_proxy_vertex_shader = __swap_chain_proxy_vertex_shader_dx11;
       renodx::mods::swapchain::swap_chain_proxy_pixel_shader = __swap_chain_proxy_pixel_shader_dx11;
-      renodx::mods::swapchain::SetUseHDR10();
 
       reshade::register_event<reshade::addon_event::init_swapchain>(OnInitSwapchain);
       break;
