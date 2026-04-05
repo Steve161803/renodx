@@ -23,12 +23,16 @@ struct ShaderInjectData {
   float tone_map_hue_shift;
   float gamma_correction;    
   float swap_chain_custom_color_space;
-  float custom_bloom;
 
+  float custom_bloom;
   float custom_vignette;
   float film_grain_type;
   float custom_film_grain;
+
   float custom_random;
+  float padding1;
+  float padding2;
+  float padding3;
 };
 
 #ifndef __cplusplus
@@ -55,16 +59,17 @@ float4 shader_injection[8] : register(c50);
 #define RENODX_TONE_MAP_HUE_SHIFT              1.f //shader_injection[3][1]
 #define RENODX_GAMMA_CORRECTION                shader_injection[3][2]
 #define RENODX_SWAP_CHAIN_CUSTOM_COLOR_SPACE   shader_injection[3][3]
-#define CUSTOM_BLOOM                           shader_injection[4][0]
 
+#define CUSTOM_BLOOM                           shader_injection[4][0]
 #define CUSTOM_VIGNETTE                        shader_injection[4][1]
 #define FILM_GRAIN_TYPE                        shader_injection[4][2]
 #define CUSTOM_FILM_GRAIN_STRENGTH             shader_injection[4][3]
+
 #define CUSTOM_RANDOM                          shader_injection[5][0]
 
 #define RENODX_SWAP_CHAIN_CLAMP_COLOR_SPACE           color::convert::COLOR_SPACE_BT2020
-#define RENODX_SWAP_CHAIN_ENCODING_COLOR_SPACE        color::convert::COLOR_SPACE_BT2020
-#define RENODX_SWAP_CHAIN_ENCODING                    renodx::draw::ENCODING_PQ
+#define RENODX_SWAP_CHAIN_ENCODING_COLOR_SPACE        color::convert::COLOR_SPACE_BT709
+#define RENODX_SWAP_CHAIN_ENCODING                    renodx::draw::ENCODING_SCRGB
 
 #else
 #if ((__SHADER_TARGET_MAJOR == 5 && __SHADER_TARGET_MINOR >= 1) || __SHADER_TARGET_MAJOR >= 6)
@@ -99,8 +104,8 @@ cbuffer shader_injection : register(b13) {
 #define CUSTOM_RANDOM                          shader_injection.custom_random
 
 #define RENODX_SWAP_CHAIN_CLAMP_COLOR_SPACE           color::convert::COLOR_SPACE_BT2020
-#define RENODX_SWAP_CHAIN_ENCODING_COLOR_SPACE        color::convert::COLOR_SPACE_BT2020
-#define RENODX_SWAP_CHAIN_ENCODING                    renodx::draw::ENCODING_PQ
+#define RENODX_SWAP_CHAIN_ENCODING_COLOR_SPACE        color::convert::COLOR_SPACE_BT709
+#define RENODX_SWAP_CHAIN_ENCODING                    renodx::draw::ENCODING_SCRGB
 
 #endif
 
