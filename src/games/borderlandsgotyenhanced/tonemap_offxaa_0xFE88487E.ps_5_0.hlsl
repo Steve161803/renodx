@@ -75,10 +75,9 @@ void main(
   r0.xyz = GammaColorScaleAndInverse.www * r0.xyz;
   o0.xyz = exp2(r0.xyz);
 
-  float3 hdr_color = renodx::color::gamma::DecodeSafe(o0.rgb);
+  float3 hdr_color = renodx::color::srgb::DecodeSafe(o0.rgb);
   o0.rgb = DisplayMap(hdr_color, v1.xy);
-  o0.rgb *= RENODX_DIFFUSE_WHITE_NITS / RENODX_GRAPHICS_WHITE_NITS;
-  o0.rgb = renodx::color::gamma::EncodeSafe(o0.rgb);
+  o0.rgb = renodx::draw::RenderIntermediatePass(o0.rgb);
 
   o0.w = 0;
   return;
