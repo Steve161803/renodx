@@ -19,6 +19,7 @@
 #define RENODX_SWAP_CHAIN_CUSTOM_COLOR_SPACE   shader_injection.swap_chain_custom_color_space
 #define CUSTOM_BLOOM                           shader_injection.custom_bloom
 #define CUSTOM_LENS_FLARE                      shader_injection.custom_lens_flare
+#define CUSTOM_LENS_DIRT                       shader_injection.custom_lens_dirt
 #define CUSTOM_HEAT_HAZE                       shader_injection.custom_heat_haze
 #define CUSTOM_VIGNETTE                        shader_injection.custom_vignette
 #define MAP_THREAT                             shader_injection.map_threat
@@ -54,13 +55,13 @@ struct ShaderInjectData {
 
   float custom_bloom;
   float custom_lens_flare;
+  float custom_lens_dirt;  
   float custom_vignette;
-  float custom_heat_haze;
 
+  float custom_heat_haze;
   float map_threat;
   float custom_film_grain;
   float custom_random;
-  float padding1;
 };
 
 #ifndef __cplusplus

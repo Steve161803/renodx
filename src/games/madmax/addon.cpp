@@ -218,7 +218,16 @@ renodx::utils::settings::Settings settings = {
       .max = 100.f,
       .parse = [](float value) { return value * 0.02f; },
     },
-        new renodx::utils::settings::Setting{
+    new renodx::utils::settings::Setting{
+      .key = "FxLensDirt",
+      .binding = &shader_injection.custom_lens_dirt,
+      .default_value = 50.f,
+      .label = "Lens Dirt",
+      .section = "Effects",
+      .max = 100.f,
+      .parse = [](float value) { return value * 0.02f; },
+    },    
+    new renodx::utils::settings::Setting{
       .key = "FxHeatHaze",
       .binding = &shader_injection.custom_heat_haze,
       .default_value = 100.f,
@@ -301,6 +310,7 @@ void OnPresetOff() {
    renodx::utils::settings::UpdateSetting("SwapChainCustomColorSpace", 0.f);
    renodx::utils::settings::UpdateSetting("FxBloom", 50.f);
    renodx::utils::settings::UpdateSetting("FxLensFlare", 50.f);
+   renodx::utils::settings::UpdateSetting("FxLensDirt", 50.f);
    renodx::utils::settings::UpdateSetting("HeatHaze", 100.f);
    renodx::utils::settings::UpdateSetting("FxVignette", 100.f); 
    renodx::utils::settings::UpdateSetting("FxFilmGrain", 0.f);

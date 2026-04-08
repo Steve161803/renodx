@@ -37,7 +37,7 @@ void main(
 
   r0.xyzw = Consts[9].xyzw * v1.xyxy;
   r1.xyz = LensDirtTexture.Sample(LensDirtTexture_s, r0.zw).xyz;
-  r1.xyz = r1.xyz * Consts[12].www + float3(1, 1, 1);
+  r1.xyz = r1.xyz * (Consts[12].www * CUSTOM_LENS_DIRT) + float3(1, 1, 1);
   r2.xyz = SecondaryBloomTexture.Sample(SecondaryBloomTexture_s, r0.xy).xyz * CUSTOM_BLOOM;
   r2.xyz = Consts[3].yyy * r2.xyz;
   r1.xyz = r2.xyz * r1.xyz;
