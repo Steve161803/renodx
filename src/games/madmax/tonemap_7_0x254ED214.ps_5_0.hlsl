@@ -1,4 +1,4 @@
-#include "./common.hlsl"
+#include "./common.hlsli"
 
 // ---- Created with 3Dmigoto v1.4.1 on Mon Apr 28 11:33:21 2025
 
@@ -53,7 +53,7 @@ void main(
   r0.xyz = r0.xyz * Consts[2].xxx + r1.xyz;
 
   float3 hdr_color = r0.rgb;
-  float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r0.rgb);
+  float3 hdr_color_tm = renodx::tonemap::neutwo::BT709(hdr_color);
   if (RENODX_TONE_MAP_TYPE > 0) {
     r0.rgb = hdr_color_tm;
   }

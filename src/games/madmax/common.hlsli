@@ -1,4 +1,4 @@
-#include "./macleod_boynton.hlsl"
+#include "./macleod_boynton.hlsli"
 #include "./shared.h"
 
 // From the Resident Evil 4 Remake mod
@@ -234,18 +234,6 @@ float3 ApplyCustomGrading(float3 ungraded_bt709) {
   float3 graded_bt709 = renodx::color::bt709::from::BT2020(graded_bt2020);
 
   return graded_bt709;
-}
-
-float3 ApplyNeutwoByMaxChannel(float3 input, float peak_white, float diffuse_white, float white_clip = 100.f,
-                               float gray_in = 0.18f, float gray_out = 0.18f, float min = 0.f) {
-  float max_channel = renodx::math::Max(input);
-
-  float peak_ratio = peak_white / diffuse_white;
-  float min_ratio = min / diffuse_white;
-  float mapped_peak = renodx::tonemap::Neutwo(max_channel, peak_ratio, white_clip, gray_in, gray_out, min_ratio);
-  float scale = renodx::math::DivideSafe(mapped_peak, max_channel, 1.f);
-  float3 tonemapped = input * scale;
-  return tonemapped;
 }
 
 float3 ApplyDisplayMap(float3 untonemapped) {

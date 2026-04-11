@@ -51,7 +51,6 @@ renodx::utils::settings::Settings settings = {
         .section = "Tone Mapping",
         .tooltip = "Sets the tone mapper type",
         .labels = {"Vanilla", "Neutwo"},
-        .parse = [](float value) { return value * 3.f; },
     },
     new renodx::utils::settings::Setting{
         .key = "ToneMapPeakNits",
