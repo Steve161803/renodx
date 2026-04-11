@@ -31,7 +31,7 @@ float4 main(PS_IN i) : COLOR
 	r1.xyz = r1.xyz * r2.w + r2.xyz;
 
     float3 hdr_color = r1.rgb;
-    float3 hdr_color_tm = renodx::tonemap::neutwo::MaxChannel(r1.rgb);
+    float3 hdr_color_tm = renodx::tonemap::neutwo::BT709(hdr_color);
     if (RENODX_TONE_MAP_TYPE > 0) {
       r1.rgb = hdr_color_tm;
     }
