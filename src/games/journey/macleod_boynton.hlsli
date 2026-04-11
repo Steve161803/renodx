@@ -1,5 +1,5 @@
-#ifndef SRC_SHADERS_COLOR_MACLEOD_BOYNTON_HLSL_
-#define SRC_SHADERS_COLOR_MACLEOD_BOYNTON_HLSL_
+#ifndef SRC_GAMES_JOURNEY_MACLEOD_BOYNTON_HLSL_
+#define SRC_GAMES_JOURNEY_MACLEOD_BOYNTON_HLSL_
 
 #include "./shared.h"
 
@@ -1156,4 +1156,4 @@ float LuminosityFromBT2020LuminanceNormalized(float3 bt2020_linear) {
   return luminosity / LuminosityFromBT709(1.f);
 }
 
-#endif  // SRC_SHADERS_COLOR_MACLEOD_BOYNTON_HLSL_
+#endif  // SRC_GAMES_JOURNEY_MACLEOD_BOYNTON_HLSL_
