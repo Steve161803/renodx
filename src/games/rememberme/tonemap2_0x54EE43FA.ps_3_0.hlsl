@@ -88,7 +88,8 @@ float4 main(PS_IN i) : COLOR
 	r3 = r3 * 4 * CUSTOM_BLOOM;
 	// r4.x = dot(r2.zwy, float3(0.300000012, 0.589999974, 0.109999999));
 	r4.x = dot(hdr_color, float3(0.300000012, 0.589999974, 0.109999999));
-	r4.x = r4.x * -3;
+	// r4.x = r4.x * -3;
+	r4.x = r4.x * 0;
 	r4.x = exp2(r4.x);
 	r4.x = saturate(r4.x * BloomTintAndScreenBlendThreshold.w);
 	// r2 = r3 * r4.x + r2;

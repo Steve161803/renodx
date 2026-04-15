@@ -50,6 +50,7 @@ float4 main(PS_IN i) : COLOR
 
 	// r1.x = dot(r0.zwy, float3(0.300000012, 0.589999974, 0.109999999));
 	r1.x = dot(hdr_color, float3(0.300000012, 0.589999974, 0.109999999));
+	// r1.x = r1.x * -3;
 	r1.x = r1.x * -3;
 	r1.x = exp2(r1.x);
 	r1.y = saturate(r1.x * BloomTintAndScreenBlendThreshold.w);

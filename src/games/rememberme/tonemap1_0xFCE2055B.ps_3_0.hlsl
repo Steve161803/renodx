@@ -41,7 +41,8 @@ float4 main(PS_IN i) : COLOR
 	float3 hdr_color = lerp(r1.xyz * 4, r0.rgb, r1.w);
 	
 	r1.x = dot(hdr_color, float3(0.300000012, 0.589999974, 0.109999999));
-	r1.x = r1.x * -3;
+	// r1.x = r1.x * -3;
+	r1.x = r1.x * 0;
 	r1.x = exp2(r1.x);
 	r1.x = saturate(r1.x * BloomTintAndScreenBlendThreshold.w);
 	r2 = tex2D(FilterColor1Texture, i.texcoord.zwzw);
