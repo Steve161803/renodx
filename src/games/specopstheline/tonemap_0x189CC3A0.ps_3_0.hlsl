@@ -29,19 +29,20 @@ float4 main(PS_IN i) : COLOR
 	r1 = tex2D(SceneColorTexture, i.texcoord1);
 	r2 = tex2D(LowResSceneBuffer, i.texcoord1.zwzw);
 	r1.xyz = r1.xyz * r2.w + r2.xyz;
-
-    float3 hdr_color = r1.rgb;
-    float3 hdr_color_tm = renodx::tonemap::neutwo::BT709(hdr_color);
-    if (RENODX_TONE_MAP_TYPE > 0) {
-      r1.rgb = hdr_color_tm;
-    }
-
 	r0.w = dot(r1.xyz, float3(0.300000012, 0.589999974, 0.109999999));
-	r0.w = r0.w * -3;
+	// r0.w = r0.w * -3;
+	r0.w = r0.w * 0;
 	r0.w = exp2(r0.w);
 	r0.w = saturate(r0.w * BloomTintAndScreenBlendThreshold.w);
 	r0.xyz = r0.xyz * r0.w + r1.xyz;
 	r0.xyz = r0.xyz + 0.00400000019;
+
+    float3 hdr_color = r0.rgb;
+    float3 hdr_color_tm = renodx::tonemap::neutwo::BT709(hdr_color);
+    if (RENODX_TONE_MAP_TYPE > 0) {
+      r0.rgb = hdr_color_tm;
+    }
+	
 	r1.xyz = max(r0.xyz, 0);
 	r0.xyz = min(r1.xyz, 16);
 	r1.xyz = r0.xyz * r0.xyz;
