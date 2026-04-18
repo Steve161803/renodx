@@ -228,6 +228,15 @@ renodx::utils::settings::Settings settings = {
       .parse = [](float value) { return value * 0.02f; },
     },
     new renodx::utils::settings::Setting{
+      .key = "FxLensFlare",
+      .binding = &shader_injection.custom_lens_flare,
+      .default_value = 50.f,
+      .label = "Lens Flare",
+      .section = "Effects",
+      .max = 100.f,
+      .parse = [](float value) { return value * 0.02f; },
+    },    
+    new renodx::utils::settings::Setting{
         .key = "FxFilmGrain",
         .binding = &shader_injection.custom_film_grain,
         .default_value = 0.f,
@@ -300,6 +309,7 @@ void OnPresetOff() {
    renodx::utils::settings::UpdateSetting("SwapChainCustomColorSpace", 0.f);
    renodx::utils::settings::UpdateSetting("FxBloom", 50.f);
    renodx::utils::settings::UpdateSetting("FxVignette", 50.f);
+   renodx::utils::settings::UpdateSetting("FxLensFlare", 50.f);
    renodx::utils::settings::UpdateSetting("FxFilmGrain", 0.f);
 }
 

@@ -50,9 +50,9 @@ float4 main(PS_IN i) : COLOR
 	r2 = r0.zzxy * r2;
 	r0.xyz = r0.xyz * 6.5 + 2.20000005;
 	r0.xyz = r1.xyz * r0.xyz + 0.0120000001;
-	r1.z = rcp(r0.x);
-	r1.w = rcp(r0.y);
-	r1.xy = rcp(r0.z);
+    r1.z = 1.0 / r0.x;
+    r1.w = 1.0 / r0.y;
+    r1.xy = 1.0 / r0.z;
 	r0 = saturate(r1 * r2);
 	r1 = -r0.yyzw + 1;
 	r1 = r1 * r1;
@@ -64,7 +64,7 @@ float4 main(PS_IN i) : COLOR
 	r2.x = r2.x + -0.5;
 	r0 = saturate(r2.x * r1 + r0);
 	r1.xy = -0.5 + i.texcoord1.xy;
-	r1.x = dot(r1, -r1) + 1;
+	r1.x = dot(r1.xy, -r1.xy) + 1;
 	r1.y = abs(r1.x) + -0.000000999999997;
 	r2.x = pow(abs(r1.x), ImageAdjustments1.z);
 	r1.x = saturate((r1.y >= 0) ? r2.x : 0);
