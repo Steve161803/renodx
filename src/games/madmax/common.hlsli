@@ -265,6 +265,22 @@ float3 ApplyHDRBoost(float3 color, float power = 0.20f, int mode = 1, float norm
   return color;
 }
 
+float3 LutSample(float3 color, Texture3D lut_texture, SamplerState lut_sample) {
+  float3 lut_input_color = saturate(color);
+  renodx::lut::Config lut_config = renodx::lut::config::Create();
+  lut_config.lut_sampler = lut_sample;
+  lut_config.strength = 1.f;
+  lut_config.scaling = RENODX_COLOR_GRADE_LUT_SCALING;
+  lut_config.type_input = renodx::lut::config::type::GAMMA_2_0;
+  lut_config.type_output = renodx::lut::config::type::GAMMA_2_0;
+  lut_config.size = 32u;
+  lut_config.tetrahedral = false;
+  lut_config.max_channel = 0.f;
+  color = renodx::lut::Sample(lut_texture, lut_config, color);
+  color = lerp(lut_input_color, color, RENODX_COLOR_GRADE_LUT_STRENGTH);
+  return color;
+}
+
 float3 ApplyDisplayMap(float3 untonemapped) {
   const float peak_ratio = RENODX_PEAK_WHITE_NITS / RENODX_DIFFUSE_WHITE_NITS;
 

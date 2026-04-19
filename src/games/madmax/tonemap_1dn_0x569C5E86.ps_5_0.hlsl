@@ -166,11 +166,12 @@ void main(
   r0.xyz = r1.xyz / r0.xyz;
   r0.xyz = float3(-0.0666666701,-0.0666666701,-0.0666666701) + r0.xyz;
   r0.xyz = Consts[1].xyz * r0.xyz;
-  r0.xyz = sqrt(r0.xyz);
-  r0.xyz = min(float3(1,1,1), r0.xyz);
-  r0.xyz = r0.xyz * float3(0.96875,0.96875,0.96875) + float3(0.015625,0.015625,0.015625);
-  r0.xyz = ColorCorrectionTexture.Sample(ColorCorrectionTexture_s, r0.xyz).xyz;
-  r0.xyz = r0.xyz * r0.xyz;
+  // r0.xyz = sqrt(r0.xyz);
+  // r0.xyz = min(float3(1,1,1), r0.xyz);
+  // r0.xyz = r0.xyz * float3(0.96875,0.96875,0.96875) + float3(0.015625,0.015625,0.015625);
+  // r0.xyz = ColorCorrectionTexture.Sample(ColorCorrectionTexture_s, r0.xyz).xyz;
+  r0.rgb = LutSample(r0.rgb, ColorCorrectionTexture, ColorCorrectionTexture_s);
+  // r0.xyz = r0.xyz * r0.xyz;
   r0.w = dot(r0.xyz, float3(0.298999995,0.587000012,0.114));
   o0.w = sqrt(r0.w);
   o0.xyz = r0.xyz;

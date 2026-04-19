@@ -198,6 +198,24 @@ renodx::utils::settings::Settings settings = {
         .is_enabled = []() { return shader_injection.tone_map_type > 0; },
         .parse = [](float value) { return value * 0.01f; },
     },
+      new renodx::utils::settings::Setting{
+        .key = "ColorGradeLUTStrength",
+        .binding = &shader_injection.color_grade_lut_strength,
+        .default_value = 100.f,
+        .label = "LUT Strength",
+        .section = "LUT Grading",
+        .max = 100.f,
+        .parse = [](float value) { return value * 0.01f; },
+    },
+      new renodx::utils::settings::Setting{
+        .key = "ColorGradeLUTScaling",
+        .binding = &shader_injection.color_grade_lut_scaling,
+        .default_value = 100.f,
+        .label = "LUT Scaling",
+        .section = "LUT Grading",
+        .max = 100.f,
+        .parse = [](float value) { return value * 0.01f; },
+    },
     new renodx::utils::settings::Setting{
       .key = "FxBloom",
       .binding = &shader_injection.custom_bloom,
@@ -305,6 +323,8 @@ void OnPresetOff() {
    renodx::utils::settings::UpdateSetting("ColorGradeShadows", 50.f);
    renodx::utils::settings::UpdateSetting("ColorGradeContrast", 50.f);
    renodx::utils::settings::UpdateSetting("ColorGradeSaturation", 50.f);
+   renodx::utils::settings::UpdateSetting("ColorGradeLUTStrength", 100.f);
+   renodx::utils::settings::UpdateSetting("ColorGradeLUTScaling", 0.f);
    renodx::utils::settings::UpdateSetting("SwapChainCustomColorSpace", 0.f);
    renodx::utils::settings::UpdateSetting("FxBloom", 50.f);
    renodx::utils::settings::UpdateSetting("FxLensFlare", 50.f);
