@@ -5,7 +5,7 @@
 
 #define ImTextureID ImU64
 
-#define DEBUG_LEVEL_0
+// #define DEBUG_LEVEL_0
 
 #define RENODX_MODS_SWAPCHAIN_VERSION 2
 
@@ -254,19 +254,7 @@ renodx::utils::settings::Settings settings = {
         .label = "Cell Shading",
         .section = "Effects",
         .labels = {"Off", "On"},
-    },
-    new renodx::utils::settings::Setting{
-        .key = "FPSLimit",
-        .binding = &renodx::utils::swapchain::fps_limit,
-        .default_value = 60.f,
-        .can_reset = false,
-        .label = "FPS Limit",
-        .section = "FPS Limit",
-        .min = 0.f,
-        .max = 500.f,
-        .parse = [](float value) { return value * 2.f; },
-        .is_global = true,
-    },         
+    },     
     new renodx::utils::settings::Setting{
         .value_type = renodx::utils::settings::SettingValueType::BUTTON,
         .label = "Reset",
@@ -301,8 +289,7 @@ renodx::utils::settings::Settings settings = {
     },
     new renodx::utils::settings::Setting{
         .value_type = renodx::utils::settings::SettingValueType::TEXT,
-        .label = std::string("- Turn off Steam Overlay, And external FPS Limiters, Use the one in the mod instead.\n"
-        "- Set in-game 'Brightness' to '7' (default)."),
+        .label = std::string("- Set in-game 'Brightness' to '7' (default)."),
         .section = "About",
     },       
 };
