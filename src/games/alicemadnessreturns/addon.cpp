@@ -5,7 +5,9 @@
 
 #define ImTextureID ImU64
 
-#define DEBUG_LEVEL_0
+// #define DEBUG_LEVEL_0
+
+#define RENODX_FPS_LIMIT_HR_TIMER
 
 #define RENODX_MODS_SWAPCHAIN_VERSION 2
 
@@ -241,13 +243,11 @@ renodx::utils::settings::Settings settings = {
         .key = "FPSLimit",
         .binding = &renodx::utils::swapchain::fps_limit,
         .default_value = 60.f,
-        .can_reset = false,
         .label = "FPS Limit",
         .section = "FPS Limit",
-        .min = 0.f,
+        .min = 30.f,
         .max = 500.f,
         .parse = [](float value) { return value * 2.f; },
-        .is_global = true,
     },      
     new renodx::utils::settings::Setting{
         .value_type = renodx::utils::settings::SettingValueType::BUTTON,
