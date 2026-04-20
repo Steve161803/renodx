@@ -5,7 +5,7 @@
 
 #define ImTextureID ImU64
 
-#define DEBUG_LEVEL_0
+// #define DEBUG_LEVEL_0
 
 #define RENODX_MODS_SWAPCHAIN_VERSION 2
 
@@ -279,8 +279,7 @@ renodx::utils::settings::Settings settings = {
     },
     new renodx::utils::settings::Setting{
         .value_type = renodx::utils::settings::SettingValueType::TEXT,
-        .label = std::string("- Turn off Steam Overlay, And external FPS Limiters, Use the one in the mod instead.\n"
-        "- Set in-game 'Brightness' to '7' (default)."),
+        .label = std::string("- Set in-game 'Brightness' to '7' (default)."),
         .section = "About",
     },    
 };
