@@ -1,7 +1,7 @@
 #include "./common.hlsli"
 
-float OcclusionPercentage : register( c0 );
-float4 UniformPixelVector_0 : register( c4 );
+float OcclusionPercentage : register(c0);
+float4 UniformPixelVector_0 : register(c4);
 
 struct PS_IN
 {

@@ -1,9 +1,9 @@
 #include "./common.hlsli"
 
-float3 ColorScale : register( c0 );
+float3 ColorScale : register(c0);
 float4 OverlayColor : register(c4);
 float InverseGamma : register(c5);
-sampler2D SceneColorTexture : register( s0 );
+sampler2D SceneColorTexture : register(s0);
 
 float4 main(float2 texcoord : TEXCOORD) : COLOR
 {

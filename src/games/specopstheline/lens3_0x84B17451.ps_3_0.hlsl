@@ -2,7 +2,7 @@
 
 float OcclusionPercentage : register(c0);
 float4 UniformPixelVector_0 : register(c4);
-sampler2D Texture2D_0 : register( s0 );
+sampler2D Texture2D_0 : register(s0);
 
 struct PS_IN
 {

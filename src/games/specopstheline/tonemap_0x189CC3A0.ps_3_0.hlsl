@@ -1,12 +1,12 @@
 #include "./common.hlsli"
 
-float4 BloomTintAndScreenBlendThreshold : register( c0 );
-float4 ImageAdjustments1 : register( c4 );
-sampler2D SceneColorTexture : register( s0 );
-sampler2D NoiseTexture : register( s1 );
-sampler2D BlurredImageSeperateBloom : register( s2 );
-sampler2D ColorGradingLUT : register( s3 );
-sampler2D LowResSceneBuffer : register( s4 );
+float4 BloomTintAndScreenBlendThreshold : register(c0);
+float4 ImageAdjustments1 : register(c4);
+sampler2D SceneColorTexture : register(s0);
+sampler2D NoiseTexture : register(s1);
+sampler2D BlurredImageSeperateBloom : register(s2);
+sampler2D ColorGradingLUT : register(s3);
+sampler2D LowResSceneBuffer : register(s4);
 
 struct PS_IN
 {
