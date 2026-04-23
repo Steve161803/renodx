@@ -20,7 +20,7 @@ float4 main(PS_IN i) : COLOR
 	
 	r0 = tex2D(PixelTexture2D_0, i.texcoord);
 	r1.xyz = r0.xyz + -0.972000003;
-	r2.xyz = r0.xyz * 1.02750003 + 1;
+	r2.xyz = r0.xyz * -1.02750003 + 1;
 	r0.xyz = r0.xyz * 0.226050004;
 	r1.xyz = (r1.xyz >= 0) ? 0.00126997079 : r2.xyz;
 	r2.x = 1 / r1.x;
