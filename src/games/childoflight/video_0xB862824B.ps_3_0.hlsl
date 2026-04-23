@@ -1,7 +1,7 @@
-float4 ps_movieAlpha : register( c8 );
-sampler2D TextureSampler0 : register( s0 );
-sampler2D TextureSampler1 : register( s1 );
-sampler2D TextureSampler2 : register( s2 );
+float4 ps_movieAlpha : register(c8);
+sampler2D TextureSampler0 : register(s0);
+sampler2D TextureSampler1 : register(s1);
+sampler2D TextureSampler2 : register(s2);
 
 float4 main(float2 texcoord : TEXCOORD) : COLOR
 {
