@@ -1,18 +1,18 @@
 #include "./common.hlsli"
 
-float4 BloomTintAndScreenBlendThreshold : register( c8 );
-float4 ImageAdjustments2 : register( c9 );
-float4 ImageAdjustments3 : register( c10 );
-float4 HalfResMaskRect : register( c11 );
-float4 DOFKernelSize : register( c12 );
-float4 VignetteSettings : register( c13 );
-float4 VignetteColor : register( c14 );
-sampler2D SceneColorTexture : register( s0 );
-sampler2D LightShaftTexture : register( s1 );
-sampler2D FilterColor1Texture : register( s2 );
-sampler2D VignetteTexture : register( s3 );
-sampler2D ColorGradingLUT : register( s4 );
-sampler2D LowResPostProcessBuffer : register( s5 );
+float4 BloomTintAndScreenBlendThreshold : register(c8);
+float4 ImageAdjustments2 : register(c9);
+float4 ImageAdjustments3 : register(c10);
+float4 HalfResMaskRect : register(c11);
+float4 DOFKernelSize : register(c12);
+float4 VignetteSettings : register(c13);
+float4 VignetteColor : register(c14);
+sampler2D SceneColorTexture : register(s0);
+sampler2D LightShaftTexture : register(s1);
+sampler2D FilterColor1Texture : register(s2);
+sampler2D VignetteTexture : register(s3);
+sampler2D ColorGradingLUT : register(s4);
+sampler2D LowResPostProcessBuffer : register(s5);
 
 struct PS_IN
 {

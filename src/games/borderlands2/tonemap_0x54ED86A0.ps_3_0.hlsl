@@ -1,11 +1,11 @@
 #include "./common.hlsli"
 
-float4 BloomTintAndScreenBlendThreshold : register( c8 );
-float4 ImageAdjustments2 : register( c9 );
-float4 ImageAdjustments3 : register( c10 );
-float4 HalfResMaskRect : register( c11 );
-float4 DOFKernelSize : register( c12 );
-float4 VignetteSettings : register( c13 );
+float4 BloomTintAndScreenBlendThreshold : register(c8);
+float4 ImageAdjustments2 : register(c9);
+float4 ImageAdjustments3 : register(c10);
+float4 HalfResMaskRect : register(c11);
+float4 DOFKernelSize : register(c12);
+float4 VignetteSettings : register(c13);
 float4 VignetteColor : register(c14);
 sampler2D SceneColorTexture : register(s0);
 sampler2D FilterColor1Texture : register(s1);

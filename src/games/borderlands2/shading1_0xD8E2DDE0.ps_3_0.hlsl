@@ -1,10 +1,10 @@
 #include "./common.hlsli"
 
-float4 HFilterAxisCoeff : register( c9 );
-float4 HFilterDiagCoeff : register( c8 );
-float4 VFilterAxisCoeff : register( c11 );
-float4 VFilterDiagCoeff : register( c10 );
-sampler2D SceneColorTexture : register( s0 );
+float4 HFilterAxisCoeff : register(c9);
+float4 HFilterDiagCoeff : register(c8);
+float4 VFilterAxisCoeff : register(c11);
+float4 VFilterDiagCoeff : register(c10);
+sampler2D SceneColorTexture : register(s0);
 
 struct PS_IN
 {
