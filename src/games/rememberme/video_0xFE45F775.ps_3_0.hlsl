@@ -1,15 +1,15 @@
 #include "./common.hlsli"
 
-float4 tor : register( c0 );
-float4 tog : register( c1 );
-float4 tob : register( c2 );
-float4 consts : register( c3 );
-float4 DNEGrainOffset : register( c4 );
-float4 DNEBlur : register( c5 );
-sampler2D tex0 : register( s0 );
-sampler2D tex1 : register( s1 );
-sampler2D tex2 : register( s2 );
-sampler2D DNEGrainTexture : register( s3 );
+float4 tor : register(c0);
+float4 tog : register(c1);
+float4 tob : register(c2);
+float4 consts : register(c3);
+float4 DNEGrainOffset : register(c4);
+float4 DNEBlur : register(c5);
+sampler2D tex0 : register(s0);
+sampler2D tex1 : register(s1);
+sampler2D tex2 : register(s2);
+sampler2D DNEGrainTexture : register(s3);
 
 float4 main(float2 texcoord : TEXCOORD) : COLOR
 {

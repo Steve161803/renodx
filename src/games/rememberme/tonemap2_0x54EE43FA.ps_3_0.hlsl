@@ -1,21 +1,21 @@
 #include "./common.hlsli"
 
-float4 BloomTintAndScreenBlendThreshold : register( c0 );
-float4 MinZ_MaxZRatio : register( c2 );
-float2 NvStereoEnabled : register( c3 );
-float4 ImageAdjustments1 : register( c7 );
-float4 ImageAdjustments2 : register( c8 );
-float4 HalfResMaskRect : register( c9 );
-float RainIntensity : register( c10 );
-float4 UVScaleBias : register( c11 );
-float4 SceneCoordinate1ScaleBias : register( c12 );
-float4 SceneCoordinate2ScaleBias : register( c13 );
-float4 SceneCoordinate3ScaleBias : register( c14 );
-float4 RainLayersDist : register( c15 );
-float4 RainAlphas : register( c16 );
-float4 DNEScreenPositionScaleBias : register( c17 );
-float4 DNEImageGrainParameter : register( c18 );
-float4 DNEVignetColor : register( c19 );
+float4 BloomTintAndScreenBlendThreshold : register(c0);
+float4 MinZ_MaxZRatio : register(c2);
+float2 NvStereoEnabled : register(c3);
+float4 ImageAdjustments1 : register(c7);
+float4 ImageAdjustments2 : register(c8);
+float4 HalfResMaskRect : register(c9);
+float RainIntensity : register(c10);
+float4 UVScaleBias : register(c11);
+float4 SceneCoordinate1ScaleBias : register(c12);
+float4 SceneCoordinate2ScaleBias : register(c13);
+float4 SceneCoordinate3ScaleBias : register(c14);
+float4 RainLayersDist : register(c15);
+float4 RainAlphas : register(c16);
+float4 DNEScreenPositionScaleBias : register(c17);
+float4 DNEImageGrainParameter : register(c18);
+float4 DNEVignetColor : register(c19);
 float4 DNEVignetMaskFactors : register(c20);
 sampler2D SceneColorTexture : register(s0);
 sampler2D NvStereoFixTexture : register(s1);

@@ -1,25 +1,25 @@
 #include "./common.hlsli"
 
-float4 BloomTintAndScreenBlendThreshold : register( c0 );
-float4 ImageAdjustments1 : register( c7 );
-float4 ImageAdjustments2 : register( c8 );
-float4 HalfResMaskRect : register( c9 );
-float4 LightShaftParameters : register( c10 );
-float4 AspectRatioAndInvAspectRatio : register( c11 );
-float2 TextureSpaceBlurOrigin : register( c12 );
-float DistanceFade : register( c13 );
-float BloomScreenBlendThreshold : register( c14 );
-float4 BloomTintAndThreshold : register( c15 );
-float4 DNEImageGrainParameter : register( c16 );
-float4 DNEVignetColor : register( c17 );
-float4 DNEVignetMaskFactors : register( c18 );
-sampler2D SceneColorTexture : register( s0 );
-sampler2D FilterColor1Texture : register( s1 );
-sampler2D LightShaftsTexture : register( s2 );
-sampler2D DNEImageGrainTexture : register( s3 );
-sampler2D DNEVignetTexture : register( s4 );
-sampler2D ColorGradingLUT : register( s5 );
-sampler2D LowResPostProcessBuffer : register( s6 );
+float4 BloomTintAndScreenBlendThreshold : register(c0);
+float4 ImageAdjustments1 : register(c7);
+float4 ImageAdjustments2 : register(c8);
+float4 HalfResMaskRect : register(c9);
+float4 LightShaftParameters : register(c10);
+float4 AspectRatioAndInvAspectRatio : register(c11);
+float2 TextureSpaceBlurOrigin : register(c12);
+float DistanceFade : register(c13);
+float BloomScreenBlendThreshold : register(c14);
+float4 BloomTintAndThreshold : register(c15);
+float4 DNEImageGrainParameter : register(c16);
+float4 DNEVignetColor : register(c17);
+float4 DNEVignetMaskFactors : register(c18);
+sampler2D SceneColorTexture : register(s0);
+sampler2D FilterColor1Texture : register(s1);
+sampler2D LightShaftsTexture : register(s2);
+sampler2D DNEImageGrainTexture : register(s3);
+sampler2D DNEVignetTexture : register(s4);
+sampler2D ColorGradingLUT : register(s5);
+sampler2D LowResPostProcessBuffer : register(s6);
 
 struct PS_IN
 {

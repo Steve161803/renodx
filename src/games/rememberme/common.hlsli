@@ -236,6 +236,35 @@ float3 ApplyCustomGrading(float3 ungraded_bt709) {
   return graded_bt709;
 }
 
+// From the Dishonored mod
+float HDRBoost(float color, float power = 0.20f, float normalization_point = 0.02f) {
+  const float smoothing = power * 2.f;
+
+  float boosted = max(color, lerp(color, normalization_point * pow(color / normalization_point, 1.f + power), renodx::tonemap::Reinhard(color, smoothing)));
+
+  return boosted;
+
+}
+
+float3 HDRBoost(float3 color, float power = 0.20f, float normalization_point = 0.02f) {
+  return float3(
+    HDRBoost(color.r, power, normalization_point),
+    HDRBoost(color.g, power, normalization_point),
+    HDRBoost(color.b, power, normalization_point)
+  );
+}
+
+float3 ApplyHDRBoost(float3 color, float power = 0.20f, int mode = 1, float normalization_point = 0.04f) {
+
+  color = max(0, renodx::color::bt2020::from::BT709(color));
+  float y_in = renodx::color::y::from::BT709(color);
+  float y_out = HDRBoost(y_in, power, normalization_point);
+  color = renodx::color::correct::Luminance(color, y_in, y_out);
+  color = renodx::color::bt709::from::BT2020(color);
+
+  return color;
+}
+
 float3 ApplyDisplayMap(float3 untonemapped) {
   const float peak_ratio = RENODX_PEAK_WHITE_NITS / RENODX_DIFFUSE_WHITE_NITS;
 
