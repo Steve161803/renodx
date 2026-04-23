@@ -296,7 +296,7 @@ float3 UpgradeToneMap(float3 hdr_color, float3 hdr_color_tm, float3 sdr_color, f
   if (RENODX_TONE_MAP_TYPE == 0.f) {
     output_color = saturate(sdr_color);
   } else {
-    output_color = renodx::tonemap::UpgradeToneMap(hdr_color, hdr_color_tm, sdr_color, RENODX_COLOR_GRADE_STRENGTH);
+    output_color = renodx::tonemap::UpgradeToneMap(hdr_color, hdr_color_tm, sdr_color);
     output_color = ApplyCustomGrading(output_color);
     output_color = ApplyDisplayMap(output_color);
   }
