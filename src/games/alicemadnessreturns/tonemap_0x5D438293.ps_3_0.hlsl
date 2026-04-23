@@ -1,12 +1,12 @@
 #include "./common.hlsli"
 
-float4 SceneShadowsAndDesaturation : register( c0 );
-float4 SceneInverseHighLights : register( c4 );
-float4 SceneMidTones : register( c5 );
-float4 SceneScaledLuminanceWeights : register( c6 );
-float4 GammaColorScaleAndInverse : register( c7 );
-float4 GammaOverlayColor : register( c8 );
-sampler2D SceneColorTexture : register( s0 );
+float4 SceneShadowsAndDesaturation : register(c0);
+float4 SceneInverseHighLights : register(c4);
+float4 SceneMidTones : register(c5);
+float4 SceneScaledLuminanceWeights : register(c6);
+float4 GammaColorScaleAndInverse : register(c7);
+float4 GammaOverlayColor : register(c8);
+sampler2D SceneColorTexture : register(s0);
 
 float4 main(float4 texcoord : TEXCOORD) : COLOR
 {
