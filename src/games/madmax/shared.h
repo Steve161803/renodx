@@ -4,7 +4,7 @@
 #define RENODX_PEAK_WHITE_NITS                 shader_injection.peak_white_nits
 #define RENODX_DIFFUSE_WHITE_NITS              shader_injection.diffuse_white_nits
 #define RENODX_GRAPHICS_WHITE_NITS             shader_injection.graphics_white_nits
-#define RENODX_COLOR_GRADE_STRENGTH            shader_injection.color_grade_strength
+#define RENODX_COLOR_GRADE_STRENGTH            1.f // shader_injection.color_grade_strength
 #define RENODX_COLOR_GRADE_LUT_STRENGTH        shader_injection.color_grade_lut_strength
 #define RENODX_COLOR_GRADE_LUT_SCALING         shader_injection.color_grade_lut_scaling
 #define RENODX_TONE_MAP_TYPE                   shader_injection.tone_map_type
