@@ -50,7 +50,7 @@ renodx::utils::settings::Settings settings = {
         .label = "Tone Mapper",
         .section = "Tone Mapping",
         .tooltip = "Sets the tone mapper type",
-        .labels = {"Vanilla", "RenoDRT"},
+        .labels = {"Vanilla", "PsychoV"},
     },
     new renodx::utils::settings::Setting{
         .key = "ToneMapPeakNits",
@@ -81,31 +81,7 @@ renodx::utils::settings::Settings settings = {
         .tooltip = "Sets the brightness of UI and HUD elements in nits",
         .min = 48.f,
         .max = 500.f,
-    },
-    new renodx::utils::settings::Setting{
-        .key = "ToneMapHueShift",
-        .binding = &shader_injection.tone_map_hue_shift,
-        .default_value = 100.f,
-        .label = "Hue Shift",
-        .section = "Tone Mapping",
-        .tooltip = "Hue-shift emulation strength.",
-        .min = 0.f,
-        .max = 100.f,
-        .is_enabled = []() { return shader_injection.tone_map_type >= 1; },
-        .parse = [](float value) { return value * 0.01f; },
-        .is_visible = []() { return current_settings_mode == 2; },
-    },
-    new renodx::utils::settings::Setting{
-        .key = "GammaCorrection",
-        .binding = &shader_injection.gamma_correction,
-        .value_type = renodx::utils::settings::SettingValueType::INTEGER,
-        .default_value = 1.f,
-        .label = "SDR EOTF Emulation",
-        .section = "Tone Mapping",
-        .tooltip = "Emulates a display EOTF.",
-        .labels = {"Off", "2.2", "BT.1886"},
-        .is_visible = []() { return current_settings_mode >= 1; },
-    },      
+    },     
     new renodx::utils::settings::Setting{
         .key = "ColorGradeExposure",
         .binding = &shader_injection.tone_map_exposure,
@@ -155,37 +131,27 @@ renodx::utils::settings::Settings settings = {
         .parse = [](float value) { return value * 0.02f; },
     },
     new renodx::utils::settings::Setting{
-        .key = "ColorGradeHighlightSaturation",
-        .binding = &shader_injection.tone_map_highlight_saturation,
+        .key = "ColorGradeConeResponse",
+        .binding = &shader_injection.tone_map_cone_response,
         .default_value = 50.f,
-        .label = "Highlight Saturation",
+        .label = "Cone Response",
         .section = "Color Grading",
-        .tooltip = "Adds or removes highlight color.",
         .max = 100.f,
-        .is_enabled = []() { return shader_injection.tone_map_type > 0; },
+        .is_enabled = []() { return shader_injection.tone_map_type > 0; },        
         .parse = [](float value) { return value * 0.02f; },
-        .is_visible = []() { return current_settings_mode == 1; },
-    },
+        .is_visible = []() { return current_settings_mode == 1; },        
+    },    
     new renodx::utils::settings::Setting{
-        .key = "ColorGradeBlowout",
-        .binding = &shader_injection.tone_map_blowout,
+        .key = "ColorGradeHueRestore",
+        .binding = &shader_injection.tone_map_hue_restore,
         .default_value = 0.f,
-        .label = "Blowout",
+        .label = "Hue Restore",
         .section = "Color Grading",
-        .tooltip = "Controls highlight desaturation due to overexposure.",
+        .tooltip = "Hue retention strength.",
         .max = 100.f,
+        .is_enabled = []() { return shader_injection.tone_map_type > 0; },        
         .parse = [](float value) { return value * 0.01f; },
-    },
-    new renodx::utils::settings::Setting{
-        .key = "ColorGradeFlare",
-        .binding = &shader_injection.tone_map_flare,
-        .default_value = 0.f,
-        .label = "Flare",
-        .section = "Color Grading",
-        .tooltip = "Flare/Glare Compensation",
-        .max = 100.f,
-        .is_enabled = []() { return shader_injection.tone_map_type > 0; },
-        .parse = [](float value) { return value * 0.02f; },
+        .is_visible = []() { return current_settings_mode == 1; }, 
     },
     new renodx::utils::settings::Setting{
         .key = "ColorGradeScene",
@@ -197,26 +163,6 @@ renodx::utils::settings::Settings settings = {
         .max = 100.f,
         .is_enabled = []() { return shader_injection.tone_map_type > 0; },
         .parse = [](float value) { return value * 0.01f; },
-    },
-    new renodx::utils::settings::Setting{
-        .key = "SwapChainCustomColorSpace",
-        .binding = &shader_injection.swap_chain_custom_color_space,
-        .value_type = renodx::utils::settings::SettingValueType::INTEGER,
-        .default_value = 0.f,
-        .label = "Custom Color Space",
-        .section = "Color Grading",
-        .tooltip = "Selects output color space"
-                   "\nUS Modern for BT.709 D65."
-                   "\nJPN Modern for BT.709 D93."
-                   "\nUS CRT for BT.601 (NTSC-U)."
-                   "\nJPN CRT for BT.601 ARIB-TR-B9 D93 (NTSC-J)."
-                   "\nDefault: US CRT",
-        .labels = {
-            "US Modern",
-            "JPN Modern",
-            "US CRT",
-            "JPN CRT",
-        },
     },
     new renodx::utils::settings::Setting{
         .key = "FxFlareOut",
@@ -245,6 +191,54 @@ renodx::utils::settings::Settings settings = {
         .section = "Effects",
         .labels = {"Off", "On"},
     },
+    new renodx::utils::settings::Setting{
+        .key = "GammaCorrection",
+        .binding = &shader_injection.gamma_correction,
+        .value_type = renodx::utils::settings::SettingValueType::INTEGER,
+        .default_value = 1.f,
+        .label = "SDR EOTF Emulation",
+        .section = "Display Output",
+        .tooltip = "Emulates output decoding used on SDR displays.",
+        .labels = {"Off", "2.2", "BT.1886"},
+        .is_visible = []() { return current_settings_mode == 1; },        
+    },     
+    new renodx::utils::settings::Setting{
+        .key = "SwapChainCustomColorSpace",
+        .binding = &shader_injection.swap_chain_custom_color_space,
+        .value_type = renodx::utils::settings::SettingValueType::INTEGER,
+        .default_value = 0.f,
+        .label = "Custom Color Space",
+        .section = "Display Output",
+        .tooltip = "Selects output color space"
+                   "\nUS Modern for BT.709 D65."
+                   "\nJPN Modern for BT.709 D93."
+                   "\nUS CRT for BT.601 (NTSC-U)."
+                   "\nJPN CRT for BT.601 ARIB-TR-B9 D93 (NTSC-J)."
+                   "\nDefault: US CRT",
+        .labels = {
+            "US Modern",
+            "JPN Modern",
+            "US CRT",
+            "JPN CRT",
+        },
+        .is_visible = []() { return current_settings_mode == 1; },        
+    },        
+    new renodx::utils::settings::Setting{
+        .key = "SwapChainPreset",
+        .binding = &shader_injection.swap_chain_output_preset,
+        .value_type = renodx::utils::settings::SettingValueType::INTEGER,
+        .default_value = 0.f,
+        .label = "HDR Output Encoding",
+        .section = "Display Output",
+        .tooltip = "HDR10 for 10 Bit Swapchain."
+        "\nscRGB for 16 Bit Swapchain.",
+        .labels = {"HDR10", "scRGB"},
+        .parse = [](float value) { return value + 1.f; },
+        .on_change_value = [](float, float current) {
+          renodx::mods::swapchain::SetUseHDR10(current == 0.f);
+        },
+        .is_visible = []() { return current_settings_mode == 1; },        
+    },        
     new renodx::utils::settings::Setting{
         .value_type = renodx::utils::settings::SettingValueType::BUTTON,
         .label = "Reset",
@@ -340,8 +334,10 @@ BOOL APIENTRY DllMain(HMODULE h_module, DWORD fdw_reason, LPVOID lpv_reserved) {
       renodx::mods::swapchain::resource_upgrade_infos.push_back({
           .old_format = reshade::api::format::r10g10b10a2_unorm,
           .new_format = reshade::api::format::r16g16b16a16_float,
+          .use_resource_view_cloning = true,
           .aspect_ratio = renodx::mods::swapchain::SwapChainUpgradeTarget::BACK_BUFFER,
           .aspect_ratio_tolerance = 0.01f,
+          .usage_include = reshade::api::resource_usage::render_target,
       });
 
       reshade::register_event<reshade::addon_event::init_swapchain>(OnInitSwapchain);
@@ -353,6 +349,7 @@ BOOL APIENTRY DllMain(HMODULE h_module, DWORD fdw_reason, LPVOID lpv_reserved) {
   }
   renodx::utils::random::Use(fdw_reason);
   renodx::utils::settings::Use(fdw_reason, &settings, &OnPresetOff);
+  renodx::mods::swapchain::SetUseHDR10(shader_injection.swap_chain_output_preset == 1.f);
   renodx::mods::swapchain::Use(fdw_reason, &shader_injection);
   renodx::mods::shader::Use(fdw_reason, custom_shaders, &shader_injection);
 
