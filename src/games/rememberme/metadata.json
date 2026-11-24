@@ -1,5 +1,10 @@
 {
   "$schema": "https://clshortfuse.github.io/renodx/renodx-metadata-schema.json",
   "id": "rememberme",
-  "title": "Remember Me"
+  "title": "Remember Me",
+  "deploy": {
+    "architecture": [
+      "x86"
+    ]
+  }
 }

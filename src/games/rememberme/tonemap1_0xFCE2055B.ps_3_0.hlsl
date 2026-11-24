@@ -40,10 +40,7 @@ float4 main(PS_IN i) : COLOR
 	// r0 = r1.w * r0 + r2;
 	float3 hdr_color = lerp(r1.xyz * 4, r0.rgb, r1.w);
 	
-	r1.x = dot(hdr_color, float3(0.300000012, 0.589999974, 0.109999999));
-	r1.x = r1.x * -3;
-	r1.x = exp2(r1.x);
-	r1.x = saturate(r1.x * BloomTintAndScreenBlendThreshold.w);
+	r1.x = ComputeBloomBlend(hdr_color, BloomTintAndScreenBlendThreshold.w);
 	r2 = tex2D(FilterColor1Texture, i.texcoord.zwzw);
 	r2 = r2.zzxy * BloomTintAndScreenBlendThreshold.zzxy;
 	r2 = r2 * 4 * CUSTOM_BLOOM;
@@ -73,6 +70,7 @@ float4 main(PS_IN i) : COLOR
 
 	float3 sdr_color = renodx::color::srgb::DecodeSafe(r3.rgb);
 	float3 output_color = DisplayMap(hdr_color, hdr_color_tm, sdr_color);
+	output_color = LutWhiteClip(output_color, sdr_color, ColorGradingLUT);
 	r3.rgb = renodx::color::srgb::EncodeSafe(output_color);
 
 	r0 = tex2D(DNEVignetTexture, i.texcoord2.zwzw);
@@ -81,7 +79,7 @@ float4 main(PS_IN i) : COLOR
 	r0.yzw = (-r1.x + DNEVignetColor.xxyz).yzw;
 	r0.xyz = r0.x * r0.yzw + 1;
 	r0.xyz = lerp(1.0, r0.xyz, CUSTOM_VIGNETTE);
-	if (FILM_GRAIN_TYPE == 0) {
+	if (FILM_GRAIN_TYPE == 1) {
 	  o.xyz = r3.xyz * r0.xyz;
 	  output_color = renodx::color::srgb::DecodeSafe(o.rgb);	
 	  float3 film_grain = FilmGrain(output_color, i.texcoord.xy, DNEImageGrainParameter.xy);

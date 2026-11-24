@@ -30,13 +30,12 @@ float4 main(PS_IN i) : COLOR
 	r2 = tex2D(LowResSceneBuffer, i.texcoord1.zwzw);
 	r1.xyz = r1.xyz * r2.w + r2.xyz;
 	r0.w = dot(r1.xyz, float3(0.300000012, 0.589999974, 0.109999999));
-	if (RENODX_TONE_MAP_TYPE == 0) {
-	  r0.w = r0.w * -3;
-	} else {
-	  r0.w = r0.w * -1;
-	}
+	r0.w = r0.w * -3;
 	r0.w = exp2(r0.w);
 	r0.w = saturate(r0.w * BloomTintAndScreenBlendThreshold.w);
+	if (RENODX_TONE_MAP_TYPE > 0.f && RENODX_PEAK_WHITE_NITS > 0.f) {
+		r0.w = saturate(BloomTintAndScreenBlendThreshold.w);
+	}
 	r0.xyz = r0.xyz * r0.w + r1.xyz;
 	r0.xyz = r0.xyz + 0.00400000019;
 
@@ -65,6 +64,7 @@ float4 main(PS_IN i) : COLOR
 	r2.xy = r2.xy * 0.015625;
 	r2 = tex2D(NoiseTexture, r2);
 	r2.x = r2.x + -0.5;
+	r2.x = r2.x * CUSTOM_DITHERING;
 	r0 = saturate(r2.x * r1 + r0);
 	r1.xy = -0.5 + i.texcoord1.xy;
 	r1.x = dot(r1.xy, -r1.xy) + 1;
@@ -86,7 +86,8 @@ float4 main(PS_IN i) : COLOR
 	o.xyz = r0.x * r0.yzw + r1.xyz;
 
 	float3 sdr_color = o.rgb;
-    o.rgb = DisplayMap(hdr_color, hdr_color_tm, sdr_color, i.texcoord.xy);
+    float3 output_color = DisplayMap(hdr_color, hdr_color_tm, sdr_color, i.texcoord.xy);
+    o.rgb = LutWhiteClip(output_color, sdr_color, ColorGradingLUT);
     o.w = 0;
 	return o;
 }

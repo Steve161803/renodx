@@ -45,10 +45,7 @@ float4 main(PS_IN i) : COLOR
 	// r0.xyz = r0.x * r0.yzw + r1.xyz;
 	float3 hdr_color = lerp(r1.xyz * 4, r2.rgb, r0.x);
 
-	r0.w = dot(hdr_color, float3(0.300000012, 0.589999974, 0.109999999));
-	r0.w = r0.w * -3;
-	r0.w = exp2(r0.w);
-	r0.w = saturate(r0.w * BloomTintAndScreenBlendThreshold.w);
+	r0.w = ComputeBloomBlend(hdr_color, BloomTintAndScreenBlendThreshold.w);
 	r1 = tex2D(FilterColor1Texture, i.texcoord.zwzw);
 	r1.xyz = r1.xyz * BloomTintAndScreenBlendThreshold.xyz;
 	r1.xyz = r1.xyz * 4 * CUSTOM_BLOOM;
@@ -106,6 +103,7 @@ float4 main(PS_IN i) : COLOR
 
 	float3 sdr_color = renodx::color::srgb::DecodeSafe(o.rgb);
 	float3 output_color = DisplayMap(hdr_color, hdr_color_tm, sdr_color, i.texcoord.xy);
+	output_color = LutWhiteClip(output_color, sdr_color, ColorGradingLUT);
     o.rgb = renodx::draw::RenderIntermediatePass(output_color);
 	
 	o.w = 0;

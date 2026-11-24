@@ -1,5 +1,10 @@
 {
   "$schema": "https://clshortfuse.github.io/renodx/renodx-metadata-schema.json",
   "id": "borderlands2",
-  "title": "Borderlands 2"
+  "title": "Borderlands 2",
+  "deploy": {
+    "architecture": [
+      "x86"
+    ]
+  }
 }
